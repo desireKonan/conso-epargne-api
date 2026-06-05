@@ -10,12 +10,14 @@ import org.marketplace_lea.application.configuration.data_initializer.dto.Distri
 import org.marketplace_lea.application.configuration.data_initializer.dto.InitDataConfig;
 import org.marketplace_lea.application.configuration.data_initializer.dto.LocalityConfig;
 import org.marketplace_lea.application.configuration.data_initializer.dto.ParameterConfigs;
+import org.marketplace_lea.application.configuration.data_initializer.dto.TransactionTemplateMessageConfig;
 import org.marketplace_lea.application.configuration.data_initializer.properties.DataInitializerProperties;
 import org.marketplace_lea.application.configuration.data_initializer.service.AccountTypeInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.CountryInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.CurrencyInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.DistrictInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.LocalityInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.NotificationTemplateInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.ParameterInitializer;
 import org.marketplace_lea.common.common.service.storage.StorageService;
 import org.springframework.context.ApplicationListener;
@@ -35,6 +37,7 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Contex
     private final CountryInitializer countryInitializer;
     private final LocalityInitializer localityInitializer;
     private final DistrictInitializer districtInitializer;
+    private final NotificationTemplateInitializer notificationTemplateInitializer;
 
     private final StorageService storageService;
     private final ObjectMapper objectMapper;
@@ -53,27 +56,42 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Contex
             storageService.init();
 
             var urls = dataInitializerProperties.getUrls();
+
+            /// Config (Data).
             InitDataConfig config = objectMapper.readValue(urls.get("data").getInputStream(), InitDataConfig.class);
             accountTypeInitializer.initialize(config.getAccountTypes(), dataInitializerProperties.isResetBeforeInit());
+
+            /// Currencies.
             currencyInitializer.initializeCurrencies(config.getCurrencies(), dataInitializerProperties.isResetBeforeInit());
 
+            /// Parameters.
             List<ParameterConfigs> parameterConfigs = objectMapper.readValue(urls.get("parameters").getInputStream(), new TypeReference<>() {
             });
             parameterInitializer.initializeParameters(parameterConfigs, dataInitializerProperties.isResetBeforeInit());
 
 
+            /// Countries.
             List<CountryConfig> countriesConfigs = objectMapper.readValue(urls.get("countries").getInputStream(), new TypeReference<>() {
             });
             countryInitializer.initializeCountries(countriesConfigs, dataInitializerProperties.isResetBeforeInit());
 
 
+            /// Localities.
             List<LocalityConfig> localityConfigs = objectMapper.readValue(urls.get("localities").getInputStream(), new TypeReference<>() {
             });
             localityInitializer.initializeLocalities(localityConfigs, dataInitializerProperties.isResetBeforeInit());
 
+
+            /// Districts.
             List<DistrictConfig> districtConfigs = objectMapper.readValue(urls.get("districts").getInputStream(), new TypeReference<>() {
             });
             districtInitializer.initializeDistricts(districtConfigs, dataInitializerProperties.isResetBeforeInit());
+
+
+            /// Templates Notifications.
+            List<TransactionTemplateMessageConfig> notificationConfigs = objectMapper.readValue(urls.get("templates").getInputStream(), new TypeReference<>() {
+            });
+            notificationTemplateInitializer.initializeTemplates(notificationConfigs, dataInitializerProperties.isResetBeforeInit());
             log.info("Initialisation terminée avec succès.");
         } catch (IOException e) {
             log.error("Impossible de lire le fichier de configuration JSON : {}", e.getMessage(), e);
