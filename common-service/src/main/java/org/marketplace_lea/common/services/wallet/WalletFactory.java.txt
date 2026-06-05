@@ -1,0 +1,37 @@
+// WalletFactory.java
+package com.app.conso_epargne.admin.services.wallet;
+
+import entities.com.conso_epargne.prometheus_service.Devise;
+import com.app.conso_epargne.admin.entities.account.AccountEntityccount;
+
+import exceptions.common.com.conso_epargne.prometheus_service.WalletException;
+import wallets.entities.com.conso_epargne.prometheus_service.CollectWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.ConsomWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.InvestmentWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.LeaWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.PersonalWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.Wallet;
+import wallets.entities.com.conso_epargne.prometheus_service.WalletType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
+@Component
+@RequiredArgsConstructor
+public class WalletFactory {
+    
+    public Wallet createWallet(String walletType, Account owner, Devise devise) throws WalletException {
+        return switch (walletType) {
+            case WalletType.COLLECT -> new CollectWallet(owner, devise);
+            case WalletType.INVESTMENT -> new InvestmentWallet(owner, devise);
+            case WalletType.LEA -> new LeaWallet(owner, devise);
+            //            {
+            //                // leaWallet.addToReserv(new BigDecimal("1000.0"));
+            //                new LeaWallet(owner, devise);
+            //                // leaWallet.addToReserv(new BigDecimal("1000.0"));
+            //            }
+            case WalletType.PERSONAL -> new PersonalWallet(owner, devise);
+            case WalletType.CONSOM -> new ConsomWallet(owner, devise);
+            default -> throw new WalletException(String.format("Unknown wallet type: '%s' for account %s", walletType, owner.getId()));
+        };
+    }
+}

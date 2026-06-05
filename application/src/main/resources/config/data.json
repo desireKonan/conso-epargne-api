@@ -1,0 +1,593 @@
+{
+  "accountTypes": [
+    {
+      "name": "PARTNER",
+      "label": "Partenaire",
+      "percentage": 5,
+      "cashback": 0
+    },
+    {
+      "name": "CUSTOMER",
+      "label": "Consom'acteur",
+      "percentage": 25,
+      "cashback": 10
+    },
+    {
+      "name": "SYSTEM",
+      "label": "SYSTEM",
+      "percentage": 0,
+      "cashback": 0
+    }
+  ],
+  "paymentMethods": [
+    {
+      "name": "Paiement à la livraison",
+      "active": true,
+      "provider": "CUSTOMER",
+      "isOnline": false
+    },
+    {
+      "name": "Orange Money",
+      "active": true,
+      "provider": "ORANGE",
+      "isOnline": true
+    },
+    {
+      "name": "Moov Money",
+      "active": true,
+      "provider": "MOOV",
+      "isOnline": true
+    },
+    {
+      "name": "MO MO",
+      "active": true,
+      "provider": "MTN",
+      "isOnline": true
+    },
+    {
+      "name": "VISA",
+      "active": false,
+      "provider": "VISA",
+      "isOnline": false
+    },
+    {
+      "name": "PAYPAL",
+      "active": false,
+      "provider": "PAYPAL",
+      "isOnline": false
+    }
+  ],
+  "resources": [
+    "CUSTOMER",
+    "COLLECT",
+    "ORDER",
+    "LOCALITY",
+    "DISTRICT",
+    "NOTIFICATION",
+    "PAYMENT_METHOD",
+    "PRODUCT",
+    "SHELF",
+    "TRANSACTION",
+    "USER",
+    "GENERAL_SETTING",
+    "USER_GROUP",
+    "VOUCHER",
+    "PROJECT_TYPE",
+    "ENSIGN",
+    "ADVERT",
+    "PRIVILEGE",
+    "ACCESS",
+    "ACCOUNT_TYPE",
+    "SUPPLIER",
+    "INVESTMENT",
+    "COUNTRY"
+  ],
+  "privileges": [
+    {
+      "name": "CREATE_CUSTOMER",
+      "description": "Privilège permettant de créer un objet customer"
+    },
+    {
+      "name": "READ_CUSTOMER",
+      "description": "Privilège permettant de consulter la liste des customer"
+    },
+    {
+      "name": "UPDATE_CUSTOMER",
+      "description": "Privilège permettant de modifier un objet customer"
+    },
+    {
+      "name": "DELETE_CUSTOMER",
+      "description": "Privilège permettant de supprimer un objet customer"
+    },
+    {
+      "name": "CREATE_COLLECT",
+      "description": "Privilège permettant de créer un objet collect"
+    },
+    {
+      "name": "READ_COLLECT",
+      "description": "Privilège permettant de consulter la liste des collect"
+    },
+    {
+      "name": "UPDATE_COLLECT",
+      "description": "Privilège permettant de modifier un objet collect"
+    },
+    {
+      "name": "DELETE_COLLECT",
+      "description": "Privilège permettant de supprimer un objet collect"
+    },
+    {
+      "name": "CREATE_ORDER",
+      "description": "Privilège permettant de créer un objet order"
+    },
+    {
+      "name": "READ_ORDER",
+      "description": "Privilège permettant de consulter la liste des order"
+    },
+    {
+      "name": "UPDATE_ORDER",
+      "description": "Privilège permettant de modifier un objet order"
+    },
+    {
+      "name": "DELETE_ORDER",
+      "description": "Privilège permettant de supprimer un objet order"
+    },
+    {
+      "name": "CREATE_LOCALITY",
+      "description": "Privilège permettant de créer un objet locality"
+    },
+    {
+      "name": "READ_LOCALITY",
+      "description": "Privilège permettant de consulter la liste des locality"
+    },
+    {
+      "name": "UPDATE_LOCALITY",
+      "description": "Privilège permettant de modifier un objet locality"
+    },
+    {
+      "name": "DELETE_LOCALITY",
+      "description": "Privilège permettant de supprimer un objet locality"
+    },
+    {
+      "name": "CREATE_DISTRICT",
+      "description": "Privilège permettant de créer un objet district"
+    },
+    {
+      "name": "READ_DISTRICT",
+      "description": "Privilège permettant de consulter la liste des district"
+    },
+    {
+      "name": "UPDATE_DISTRICT",
+      "description": "Privilège permettant de modifier un objet district"
+    },
+    {
+      "name": "DELETE_DISTRICT",
+      "description": "Privilège permettant de supprimer un objet district"
+    },
+    {
+      "name": "CREATE_NOTIFICATION",
+      "description": "Privilège permettant de créer un objet notification"
+    },
+    {
+      "name": "READ_NOTIFICATION",
+      "description": "Privilège permettant de consulter la liste des notification"
+    },
+    {
+      "name": "UPDATE_NOTIFICATION",
+      "description": "Privilège permettant de modifier un objet notification"
+    },
+    {
+      "name": "DELETE_NOTIFICATION",
+      "description": "Privilège permettant de supprimer un objet notification"
+    },
+    {
+      "name": "CREATE_PAYMENT_METHOD",
+      "description": "Privilège permettant de créer un objet payment_method"
+    },
+    {
+      "name": "READ_PAYMENT_METHOD",
+      "description": "Privilège permettant de consulter la liste des payment_method"
+    },
+    {
+      "name": "UPDATE_PAYMENT_METHOD",
+      "description": "Privilège permettant de modifier un objet payment_method"
+    },
+    {
+      "name": "DELETE_PAYMENT_METHOD",
+      "description": "Privilège permettant de supprimer un objet payment_method"
+    },
+    {
+      "name": "CREATE_PRODUCT",
+      "description": "Privilège permettant de créer un objet product"
+    },
+    {
+      "name": "READ_PRODUCT",
+      "description": "Privilège permettant de consulter la liste des product"
+    },
+    {
+      "name": "UPDATE_PRODUCT",
+      "description": "Privilège permettant de modifier un objet product"
+    },
+    {
+      "name": "DELETE_PRODUCT",
+      "description": "Privilège permettant de supprimer un objet product"
+    },
+    {
+      "name": "CREATE_SHELF",
+      "description": "Privilège permettant de créer un objet shelf"
+    },
+    {
+      "name": "READ_SHELF",
+      "description": "Privilège permettant de consulter la liste des shelf"
+    },
+    {
+      "name": "UPDATE_SHELF",
+      "description": "Privilège permettant de modifier un objet shelf"
+    },
+    {
+      "name": "DELETE_SHELF",
+      "description": "Privilège permettant de supprimer un objet shelf"
+    },
+    {
+      "name": "CREATE_TRANSACTION",
+      "description": "Privilège permettant de créer un objet transaction"
+    },
+    {
+      "name": "READ_TRANSACTION",
+      "description": "Privilège permettant de consulter la liste des transaction"
+    },
+    {
+      "name": "UPDATE_TRANSACTION",
+      "description": "Privilège permettant de modifier un objet transaction"
+    },
+    {
+      "name": "DELETE_TRANSACTION",
+      "description": "Privilège permettant de supprimer un objet transaction"
+    },
+    {
+      "name": "CREATE_USER",
+      "description": "Privilège permettant de créer un objet user"
+    },
+    {
+      "name": "READ_USER",
+      "description": "Privilège permettant de consulter la liste des user"
+    },
+    {
+      "name": "UPDATE_USER",
+      "description": "Privilège permettant de modifier un objet user"
+    },
+    {
+      "name": "DELETE_USER",
+      "description": "Privilège permettant de supprimer un objet user"
+    },
+    {
+      "name": "CREATE_GENERAL_SETTING",
+      "description": "Privilège permettant de créer un objet general_setting"
+    },
+    {
+      "name": "READ_GENERAL_SETTING",
+      "description": "Privilège permettant de consulter la liste des general_setting"
+    },
+    {
+      "name": "UPDATE_GENERAL_SETTING",
+      "description": "Privilège permettant de modifier un objet general_setting"
+    },
+    {
+      "name": "DELETE_GENERAL_SETTING",
+      "description": "Privilège permettant de supprimer un objet general_setting"
+    },
+    {
+      "name": "CREATE_USER_GROUP",
+      "description": "Privilège permettant de créer un objet user_group"
+    },
+    {
+      "name": "READ_USER_GROUP",
+      "description": "Privilège permettant de consulter la liste des user_group"
+    },
+    {
+      "name": "UPDATE_USER_GROUP",
+      "description": "Privilège permettant de modifier un objet user_group"
+    },
+    {
+      "name": "DELETE_USER_GROUP",
+      "description": "Privilège permettant de supprimer un objet user_group"
+    },
+    {
+      "name": "CREATE_VOUCHER",
+      "description": "Privilège permettant de créer un objet voucher"
+    },
+    {
+      "name": "READ_VOUCHER",
+      "description": "Privilège permettant de consulter la liste des voucher"
+    },
+    {
+      "name": "UPDATE_VOUCHER",
+      "description": "Privilège permettant de modifier un objet voucher"
+    },
+    {
+      "name": "DELETE_VOUCHER",
+      "description": "Privilège permettant de supprimer un objet voucher"
+    },
+    {
+      "name": "CREATE_PROJECT_TYPE",
+      "description": "Privilège permettant de créer un objet project_type"
+    },
+    {
+      "name": "READ_PROJECT_TYPE",
+      "description": "Privilège permettant de consulter la liste des project_type"
+    },
+    {
+      "name": "UPDATE_PROJECT_TYPE",
+      "description": "Privilège permettant de modifier un objet project_type"
+    },
+    {
+      "name": "DELETE_PROJECT_TYPE",
+      "description": "Privilège permettant de supprimer un objet project_type"
+    },
+    {
+      "name": "CREATE_ENSIGN",
+      "description": "Privilège permettant de créer un objet ensign"
+    },
+    {
+      "name": "READ_ENSIGN",
+      "description": "Privilège permettant de consulter la liste des ensign"
+    },
+    {
+      "name": "UPDATE_ENSIGN",
+      "description": "Privilège permettant de modifier un objet ensign"
+    },
+    {
+      "name": "DELETE_ENSIGN",
+      "description": "Privilège permettant de supprimer un objet ensign"
+    },
+    {
+      "name": "CREATE_ADVERT",
+      "description": "Privilège permettant de créer un objet advert"
+    },
+    {
+      "name": "READ_ADVERT",
+      "description": "Privilège permettant de consulter la liste des advert"
+    },
+    {
+      "name": "UPDATE_ADVERT",
+      "description": "Privilège permettant de modifier un objet advert"
+    },
+    {
+      "name": "DELETE_ADVERT",
+      "description": "Privilège permettant de supprimer un objet advert"
+    },
+    {
+      "name": "CREATE_PRIVILEGE",
+      "description": "Privilège permettant de créer un objet privilege"
+    },
+    {
+      "name": "READ_PRIVILEGE",
+      "description": "Privilège permettant de consulter la liste des privilege"
+    },
+    {
+      "name": "UPDATE_PRIVILEGE",
+      "description": "Privilège permettant de modifier un objet privilege"
+    },
+    {
+      "name": "DELETE_PRIVILEGE",
+      "description": "Privilège permettant de supprimer un objet privilege"
+    },
+    {
+      "name": "CREATE_ACCESS",
+      "description": "Privilège permettant de créer un objet access"
+    },
+    {
+      "name": "READ_ACCESS",
+      "description": "Privilège permettant de consulter la liste des access"
+    },
+    {
+      "name": "UPDATE_ACCESS",
+      "description": "Privilège permettant de modifier un objet access"
+    },
+    {
+      "name": "DELETE_ACCESS",
+      "description": "Privilège permettant de supprimer un objet access"
+    },
+    {
+      "name": "CREATE_ACCOUNT_TYPE",
+      "description": "Privilège permettant de créer un objet account_type"
+    },
+    {
+      "name": "READ_ACCOUNT_TYPE",
+      "description": "Privilège permettant de consulter la liste des account_type"
+    },
+    {
+      "name": "UPDATE_ACCOUNT_TYPE",
+      "description": "Privilège permettant de modifier un objet account_type"
+    },
+    {
+      "name": "DELETE_ACCOUNT_TYPE",
+      "description": "Privilège permettant de supprimer un objet account_type"
+    },
+    {
+      "name": "CREATE_SUPPLIER",
+      "description": "Privilège permettant de créer un objet supplier"
+    },
+    {
+      "name": "READ_SUPPLIER",
+      "description": "Privilège permettant de consulter la liste des supplier"
+    },
+    {
+      "name": "UPDATE_SUPPLIER",
+      "description": "Privilège permettant de modifier un objet supplier"
+    },
+    {
+      "name": "DELETE_SUPPLIER",
+      "description": "Privilège permettant de supprimer un objet supplier"
+    },
+    {
+      "name": "CREATE_INVESTMENT",
+      "description": "Privilège permettant de créer un objet investment"
+    },
+    {
+      "name": "READ_INVESTMENT",
+      "description": "Privilège permettant de consulter la liste des investment"
+    },
+    {
+      "name": "UPDATE_INVESTMENT",
+      "description": "Privilège permettant de modifier un objet investment"
+    },
+    {
+      "name": "DELETE_INVESTMENT",
+      "description": "Privilège permettant de supprimer un objet investment"
+    },
+    {
+      "name": "CREATE_COUNTRY",
+      "description": "Privilège permettant de créer un objet country"
+    },
+    {
+      "name": "READ_COUNTRY",
+      "description": "Privilège permettant de consulter la liste des country"
+    },
+    {
+      "name": "UPDATE_COUNTRY",
+      "description": "Privilège permettant de modifier un objet country"
+    },
+    {
+      "name": "DELETE_COUNTRY",
+      "description": "Privilège permettant de supprimer un objet country"
+    }
+  ],
+  "userGroup": {
+    "label": "SUPER_ADMIN",
+    "description": "Default",
+    "privileges": [
+      "CREATE_CUSTOMER",
+      "READ_CUSTOMER",
+      "UPDATE_CUSTOMER",
+      "DELETE_CUSTOMER",
+      "CREATE_COLLECT",
+      "READ_COLLECT",
+      "UPDATE_COLLECT",
+      "DELETE_COLLECT",
+      "CREATE_ORDER",
+      "READ_ORDER",
+      "UPDATE_ORDER",
+      "DELETE_ORDER",
+      "CREATE_LOCALITY",
+      "READ_LOCALITY",
+      "UPDATE_LOCALITY",
+      "DELETE_LOCALITY",
+      "CREATE_DISTRICT",
+      "READ_DISTRICT",
+      "UPDATE_DISTRICT",
+      "DELETE_DISTRICT",
+      "CREATE_NOTIFICATION",
+      "READ_NOTIFICATION",
+      "UPDATE_NOTIFICATION",
+      "DELETE_NOTIFICATION",
+      "CREATE_PAYMENT_METHOD",
+      "READ_PAYMENT_METHOD",
+      "UPDATE_PAYMENT_METHOD",
+      "DELETE_PAYMENT_METHOD",
+      "CREATE_PRODUCT",
+      "READ_PRODUCT",
+      "UPDATE_PRODUCT",
+      "DELETE_PRODUCT",
+      "CREATE_SHELF",
+      "READ_SHELF",
+      "UPDATE_SHELF",
+      "DELETE_SHELF",
+      "CREATE_TRANSACTION",
+      "READ_TRANSACTION",
+      "UPDATE_TRANSACTION",
+      "DELETE_TRANSACTION",
+      "CREATE_USER",
+      "READ_USER",
+      "UPDATE_USER",
+      "DELETE_USER",
+      "CREATE_GENERAL_SETTING",
+      "READ_GENERAL_SETTING",
+      "UPDATE_GENERAL_SETTING",
+      "DELETE_GENERAL_SETTING",
+      "CREATE_USER_GROUP",
+      "READ_USER_GROUP",
+      "UPDATE_USER_GROUP",
+      "DELETE_USER_GROUP",
+      "CREATE_VOUCHER",
+      "READ_VOUCHER",
+      "UPDATE_VOUCHER",
+      "DELETE_VOUCHER",
+      "CREATE_PROJECT_TYPE",
+      "READ_PROJECT_TYPE",
+      "UPDATE_PROJECT_TYPE",
+      "DELETE_PROJECT_TYPE",
+      "CREATE_ENSIGN",
+      "READ_ENSIGN",
+      "UPDATE_ENSIGN",
+      "DELETE_ENSIGN",
+      "CREATE_ADVERT",
+      "READ_ADVERT",
+      "UPDATE_ADVERT",
+      "DELETE_ADVERT",
+      "CREATE_PRIVILEGE",
+      "READ_PRIVILEGE",
+      "UPDATE_PRIVILEGE",
+      "DELETE_PRIVILEGE",
+      "CREATE_ACCESS",
+      "READ_ACCESS",
+      "UPDATE_ACCESS",
+      "DELETE_ACCESS",
+      "CREATE_ACCOUNT_TYPE",
+      "READ_ACCOUNT_TYPE",
+      "UPDATE_ACCOUNT_TYPE",
+      "DELETE_ACCOUNT_TYPE",
+      "CREATE_SUPPLIER",
+      "READ_SUPPLIER",
+      "UPDATE_SUPPLIER",
+      "DELETE_SUPPLIER",
+      "CREATE_INVESTMENT",
+      "READ_INVESTMENT",
+      "UPDATE_INVESTMENT",
+      "DELETE_INVESTMENT",
+      "CREATE_COUNTRY",
+      "READ_COUNTRY",
+      "UPDATE_COUNTRY",
+      "DELETE_COUNTRY"
+    ]
+  },
+  "adminUser": {
+    "username": "sa",
+    "password": "sadmin1234",
+    "lastName": "Admin",
+    "firstName": "Conso",
+    "group": "SUPER_ADMIN"
+  },
+  "systemAccount": {
+    "id": "SYSTEM",
+    "affiliationCode": "SYSTEM",
+    "accountTypeId": "SYSTEM",
+    "checked": true
+  },
+  "supplier": {
+    "companyName": "CONSO EPARGNE",
+    "address": "ABIDJAN",
+    "firstName": "Conso",
+    "lastName": "Epargne",
+    "phoneNumber": "0000000000"
+  },
+  "currencies": [
+    {
+      "code": "POINT",
+      "name": "Point",
+      "description": "Devise principale conso-epargne"
+    },
+    {
+      "code": "LEA",
+      "name": "Lea",
+      "description": "Devise pour les jetons"
+    },
+    {
+      "code": "FCFA",
+      "name": "F CFA",
+      "description": "Devise monétaire de base"
+    }
+  ],
+  "currencyConfig": {
+    "defaultCurrency": 500
+  }
+}

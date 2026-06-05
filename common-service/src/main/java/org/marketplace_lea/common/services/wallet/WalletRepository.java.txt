@@ -1,0 +1,20 @@
+package com.app.conso_epargne.admin.services.wallet;
+
+// Repository méthodes à ajouter
+public interface WalletRepository extends JpaRepository<Wallet, String> {
+    // ... existing queries
+    
+    <T extends Wallet> Optional<T> findByAccountAndWalletType(
+        Account account,
+        String walletType, 
+        Class<T> walletClass
+    );
+    
+    @Query("SELECT COALESCE(SUM(c.balance + c.amountReserved), 0) " +
+           "FROM ConsomWallet c")
+    BigDecimal getTotalConsomBalance();
+    
+    @Query("SELECT COALESCE(SUM(c.totalDrawnAmount), 0) " +
+           "FROM ConsomWallet c")
+    BigDecimal getTotalConsomDrawnAmount();
+}

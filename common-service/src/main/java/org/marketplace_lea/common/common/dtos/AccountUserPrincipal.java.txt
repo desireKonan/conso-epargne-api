@@ -1,0 +1,64 @@
+package com.conso_epargne.common_service.common.dtos;
+
+import com.conso_epargne.common_service.entities.account.Account;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+@Getter
+@Setter
+public class AccountUserPrincipal implements UserDetails {
+    private String username;
+    private String password;
+    private List<String> roles = new ArrayList<>();
+
+
+    public AccountUserPrincipal(String username, String password, List<String> roles) {
+        this.username = username;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        final List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("CUSTOMER"));
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return account.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return account.getLogin();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !account.isBlocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return account.isEnabled();
+    }
+}

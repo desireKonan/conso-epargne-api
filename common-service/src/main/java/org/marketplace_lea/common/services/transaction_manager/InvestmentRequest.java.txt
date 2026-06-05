@@ -1,0 +1,76 @@
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+import com.app.conso_epargne.admin.entities.account.AccountEntityccount;
+import collect.entities.com.conso_epargne.prometheus_service.Collect;
+import investments.entities.com.conso_epargne.prometheus_service.Investment;
+import subscription.entities.com.conso_epargne.prometheus_service.ConsoSubscription;
+
+import java.math.BigDecimal;
+
+// Records pour les requêtes
+public record InvestmentRequest(
+        Account account,
+        Investment investment,
+        BigDecimal numberOfTokens
+) {
+    public static InvestmentRequestBuilder builder() {
+        return new InvestmentRequestBuilder();
+    }
+}
+
+public record ProfitDistributionRequest(
+        Investment investment,
+        BigDecimal totalAmount,
+        double exchangeRate
+) {
+    public static ProfitDistributionRequestBuilder builder() {
+        return new ProfitDistributionRequestBuilder();
+    }
+}
+
+public record DonationRequest(
+        Account donor,
+        BigDecimal amount,
+        Collect collect
+) {
+    public static DonationRequestBuilder builder() {
+        return new DonationRequestBuilder();
+    }
+}
+
+public record ConversionRequest(
+        Account account,
+        BigDecimal amount,
+        ConversionType conversionType,
+        double exchangeRate
+) {
+    public static ConversionRequestBuilder builder() {
+        return new ConversionRequestBuilder();
+    }
+}
+
+public record DispatchRequest(
+        Account account,
+        BigDecimal amount,
+        boolean isCashbackActive,
+        List<ConsoSubscription> currentSubscriptions
+) {
+    public static DispatchRequestBuilder builder() {
+        return new DispatchRequestBuilder();
+    }
+}
+
+public record ProfitDistribution(
+        Account account,
+        BigDecimal amount
+) {
+    public static ProfitDistributionBuilder builder() {
+        return new ProfitDistributionBuilder();
+    }
+}
+
+// Enum pour les types de conversion
+public enum ConversionType {
+    POINTS_TO_LEA,
+    LEA_TO_POINTS
+}

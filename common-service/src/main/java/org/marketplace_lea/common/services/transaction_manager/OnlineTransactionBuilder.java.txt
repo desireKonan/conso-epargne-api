@@ -1,0 +1,122 @@
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+// OnlineTransactionBuilder.java - Builder pattern pour les transactions
+public class OnlineTransactionBuilder {
+    
+    private Account initiator;
+    private Wallet destination;
+    private BigDecimal amount;
+    private BigDecimal coinAmount;
+    private TransactionType transactionType;
+    private String phoneNumber;
+    private BigDecimal changeAmount;
+    private String currency;
+    private String objectId;
+    private PaymentMethod paymentMethod;
+    private BigDecimal fees;
+    
+    private OnlineTransactionBuilder() {}
+    
+    public static OnlineTransactionBuilder builder() {
+        return new OnlineTransactionBuilder();
+    }
+    
+    public OnlineTransactionBuilder initiator(Account initiator) {
+        this.initiator = initiator;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder destination(Wallet destination) {
+        this.destination = destination;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder amount(BigDecimal amount) {
+        this.amount = amount;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder coinAmount(BigDecimal coinAmount) {
+        this.coinAmount = coinAmount;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder transactionType(TransactionType transactionType) {
+        this.transactionType = transactionType;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder phoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder changeAmount(BigDecimal changeAmount) {
+        this.changeAmount = changeAmount;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder currency(String currency) {
+        this.currency = currency;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder objectId(String objectId) {
+        this.objectId = objectId;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder paymentMethod(PaymentMethod paymentMethod) {
+        this.paymentMethod = paymentMethod;
+        return this;
+    }
+    
+    public OnlineTransactionBuilder fees(BigDecimal fees) {
+        this.fees = fees;
+        return this;
+    }
+    
+    public Transaction buildAndSave(TransactionService transactionService) throws WalletException {
+        Transaction transaction = new Transaction();
+        
+        transaction.setInitiator(initiator);
+        transaction.setDestination(destination);
+        transaction.setAmount(amount != null ? amount.doubleValue() : 0);
+        transaction.setCoinAmount(coinAmount != null ? coinAmount.doubleValue() : 0);
+        transaction.setTransactionType(transactionType);
+        transaction.setPhoneNumber(phoneNumber);
+        transaction.setCoinToCurrencyChangeAmount(changeAmount);
+        transaction.setCurrency(currency != null ? currency.toUpperCase() : null);
+        transaction.setObjectId(objectId);
+        transaction.setPaymentMethod(paymentMethod);
+        transaction.setFees(fees != null ? fees.doubleValue() : 0);
+        
+        // Calcul du montant en coin basé sur les souscriptions
+        calculateCoinAmountBasedOnSubscription(transaction);
+        
+        return transactionService.saveV2(transaction, false);
+    }
+    
+    private void calculateCoinAmountBasedOnSubscription(Transaction transaction) {
+        if (transaction.getInitiator() == null || transaction.getObjectId() == null) {
+            return;
+        }
+        
+        List<ConsoSubscription> subscriptions = subscriptionService
+                .getCurrentSubscriptions(transaction.getInitiator());
+        
+        if (!subscriptions.isEmpty()) {
+            BigDecimal coinSum = orderItemRepository.sumTotalCommissionPointsByOrder(
+                    transaction.getObjectId(),
+                    OrderStatus.VALIDATED
+            );
+            
+            ConsoSubscription subscription = subscriptions.get(0);
+            if (ConsoSubscriptionType.OR.value().equals(subscription.getType())) {
+                transaction.setCoinAmount(coinSum.multiply(BigDecimal.valueOf(2)).floatValue());
+            } else {
+                transaction.setCoinAmount(coinSum.floatValue());
+            }
+        }
+    }
+}

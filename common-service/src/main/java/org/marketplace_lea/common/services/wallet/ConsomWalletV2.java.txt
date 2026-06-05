@@ -1,0 +1,59 @@
+package com.app.conso_epargne.admin.services.wallet;
+
+// Refactored ConsomWallet methods
+public class ConsomWalletV2 extends Wallet {
+    // ... existing fields
+    
+    public void send(BigDecimal amount) {
+        validateAmount(amount);
+        validateSufficientBalance(amount);
+        
+        removeFromBalance(amount);
+        totalSent = totalSent.add(amount);
+    }
+    
+    public void receive(BigDecimal amount) {
+        validateAmount(amount);
+        totalReceived = totalReceived.add(amount);
+        addToBalance(amount);
+    }
+    
+    public void invest(BigDecimal amount) {
+        validateAmount(amount);
+        validateSufficientBalance(amount);
+        
+        investedCoinAmount = investedCoinAmount.add(amount);
+        removeFromBalance(amount);
+    }
+    
+    public void sellInvestment(BigDecimal amount) {
+        validateAmount(amount);
+        validateSufficientInvestment(amount);
+        
+        investedCoinAmount = investedCoinAmount.subtract(amount);
+    }
+    
+    public void receiveFromSale(BigDecimal amount) {
+        validateAmount(amount);
+        totalReceived = totalReceived.add(amount);
+        addToBalance(amount);
+    }
+    
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null || amount.signum() <= 0) {
+            throw new AmountCannotBeNegativeException("Amount must be positive");
+        }
+    }
+    
+    private void validateSufficientBalance(BigDecimal amount) {
+        if (getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+    }
+    
+    private void validateSufficientInvestment(BigDecimal amount) {
+        if (investedCoinAmount.compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient investment amount");
+        }
+    }
+}

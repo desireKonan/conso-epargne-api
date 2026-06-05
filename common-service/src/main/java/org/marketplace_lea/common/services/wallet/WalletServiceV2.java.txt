@@ -1,0 +1,235 @@
+package com.app.conso_epargne.admin.services.wallet;
+
+import constants.common.com.conso_epargne.prometheus_service.ConsoEpargneConstants;
+import exceptions.common.com.conso_epargne.prometheus_service.AmountCannotBeNegativeException;
+import exceptions.common.com.conso_epargne.prometheus_service.InsufficientBalanceException;
+import exceptions.common.com.conso_epargne.prometheus_service.WalletException;
+import dtos.com.conso_epargne.prometheus_service.ConsomWalletDTO;
+import dtos.com.conso_epargne.prometheus_service.WalletAccountDTO;
+import entities.com.conso_epargne.prometheus_service.Devise;
+import entities.com.conso_epargne.prometheus_service.CurrencyValue;
+import com.app.conso_epargne.admin.entities.account.AccountEntityccount;
+import wallets.entities.com.conso_epargne.prometheus_service.ConsomWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.InvestmentWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.LeaWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.PersonalWallet;
+import wallets.entities.com.conso_epargne.prometheus_service.Wallet;
+import wallets.entities.com.conso_epargne.prometheus_service.WalletType;
+import repositories.com.conso_epargne.prometheus_service.AccountRepository;
+import repositories.com.conso_epargne.prometheus_service.DeviseRepository;
+import repositories.com.conso_epargne.prometheus_service.WalletRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class WalletServiceV2 {
+    private final WalletRepository walletRepository;
+    private final DeviseRepository deviseRepository;
+    private final AccountRepository accountRepository;
+    private final WalletFactory walletFactory;
+    
+    @Transactional
+    public Wallet save(Wallet wallet) {
+        Wallet savedWallet = walletRepository.save(wallet);
+        log.info("Saved wallet with id: {}", savedWallet.getId());
+        return savedWallet;
+    }
+    
+    public PersonalWallet getPersonalWallet(Account account) {
+        return walletRepository.findByAccountAndWalletType(account, WalletType.PERSONAL, PersonalWallet.class)
+                .orElseGet(() -> createWallet(WalletType.PERSONAL, null, account));
+    }
+    
+    public ConsomWallet getConsomWallet(Account account) {
+        return walletRepository.findByAccountAndWalletType(account, WalletType.CONSOM, ConsomWallet.class)
+                .orElseGet(() -> createWallet(WalletType.CONSOM, DeviseValue.CONSOM, account));
+    }
+    
+    public LeaWallet getLeaWallet(Account account) {
+        return walletRepository.findByAccountAndWalletType(account, WalletType.LEA, LeaWallet.class)
+                .orElseGet(() -> createWallet(WalletType.LEA, DeviseValue.LEA, account));
+    }
+    
+    public InvestmentWallet getInvestmentWallet(Account account) {
+        return walletRepository.findByAccountAndWalletType(account, WalletType.INVESTMENT, InvestmentWallet.class)
+                .orElseGet(() -> createWallet(WalletType.INVESTMENT, null, account));
+    }
+    
+    @Transactional
+    public Wallet createWallet(String walletType, DeviseValue deviseValue, Account account) {
+        Account owner = getWalletOwner(account);
+        Devise devise = getWalletDevise(deviseValue);
+
+        try {
+            return walletFactory.createWallet(walletType, owner, devise);
+        } catch (WalletException ex) {
+            log.error("[WalletService]");
+        }
+    }
+    
+    @Transactional
+    public String sendConsom(Account sender, Account receiver, BigDecimal amount) {
+        validateAmount(amount);
+        
+        ConsomWallet senderWallet = getConsomWallet(sender);
+        ConsomWallet receiverWallet = getConsomWallet(receiver);
+        
+        validateSufficientBalance(senderWallet, amount);
+        
+        senderWallet.send(amount);
+        receiverWallet.receive(amount);
+        
+        saveWallets(senderWallet, receiverWallet);
+        
+        log.info("Sent {} Consom from {} to {}", amount, sender.getId(), receiver.getId());
+        return "Transfer successful";
+    }
+    
+    @Transactional
+    public void sellConsom(Account seller, BigDecimal amount, String numberAndOperator) {
+        validateAmount(amount);
+        
+        ConsomWallet sellerWallet = getConsomWallet(seller);
+        sellerWallet.setNumberAndOperator(numberAndOperator);
+        
+        validateSufficientBalance(sellerWallet, amount);
+        
+        sellerWallet.invest(amount);
+        walletRepository.save(sellerWallet);
+    }
+    
+    @Transactional
+    public void buyConsom(Account buyer, Account seller, BigDecimal amount) {
+        validateAmount(amount);
+        
+        ConsomWallet buyerWallet = getConsomWallet(buyer);
+        ConsomWallet sellerWallet = getConsomWallet(seller);
+        
+        validateSufficientInvestment(sellerWallet, amount);
+        
+        sellerWallet.sellInvestment(amount);
+        buyerWallet.receiveFromSale(amount);
+        
+        saveWallets(sellerWallet, buyerWallet);
+        
+        log.info("Bought {} Consom from {} by {}", amount, seller.getId(), buyer.getId());
+    }
+    
+    public Page<WalletAccountDTO> getAvailableConsomForSale(Pageable pageable) {
+        return walletRepository.findWalletsByAccountId(WalletType.CONSOM, pageable);
+    }
+    
+    public Page<WalletAccountDTO> getPeopleWithConsom(Pageable pageable) {
+        return walletRepository.findWalletsByBalance(WalletType.CONSOM, pageable);
+    }
+    
+    public ConsomWalletDTO getConsomWalletDTO(Account account) {
+        ConsomWallet wallet = getConsomWallet(account);
+        return ConsomWalletDTO.from(wallet);
+    }
+    
+    @Transactional
+    public String convertPointsToLea(Account account, int points) {
+        validatePositivePoints(points);
+        
+        PersonalWallet personalWallet = getPersonalWallet(account);
+        LeaWallet leaWallet = getLeaWallet(account);
+        ConsomWallet consomWallet = getConsomWallet(account);
+        
+        ConversionResult conversion = ConversionCalculator.calculate(points);
+        
+        validateConversionFunds(personalWallet, consomWallet, points, conversion.getConsomAmount());
+        
+        executeConversion(personalWallet, leaWallet, consomWallet, conversion);
+        
+        saveWallets(personalWallet, leaWallet, consomWallet);
+        
+        return conversion.getSuccessMessage(points);
+    }
+    
+    public Map<String, BigDecimal> getTotals() {
+        BigDecimal totalBalance = walletRepository.getTotalConsomBalance();
+        BigDecimal totalDrawn = walletRepository.getTotalConsomDrawnAmount();
+        
+        Map<String, BigDecimal> result = new HashMap<>();
+        result.put("total_balance", totalBalance);
+        result.put("total_drawn", totalDrawn);
+        return result;
+    }
+    
+    // Helper methods
+    private Account getWalletOwner(Account account) {
+        return account != null ? account :
+                accountRepository.findById(ConsoEpargneConstants.SYSTEM_ACCOUNT_ID)
+                        .orElseThrow(() -> new WalletException("System account not found"));
+    }
+    
+    private Devise getWalletDevise(DeviseValue deviseValue) {
+        String deviseId = deviseValue != null ? deviseValue.toString() : ConsoEpargneConstants.DEFAULT_DEVISE;
+        return deviseRepository.findById(deviseId)
+                .orElseThrow(() -> new WalletException("Devise not found: " + deviseId));
+    }
+    
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null || amount.signum() <= 0) {
+            throw new IllegalArgumentException("Amount must be positive");
+        }
+    }
+    
+    private void validatePositivePoints(int points) {
+        if (points <= 0) {
+            throw new IllegalArgumentException("Points must be positive");
+        }
+    }
+    
+    private void validateSufficientBalance(ConsomWallet wallet, BigDecimal amount) {
+        if (wallet.getBalance().compareTo(amount) < 0) {
+            throw new InsufficientBalanceException("Insufficient balance");
+        }
+    }
+    
+    private void validateSufficientInvestment(ConsomWallet wallet, BigDecimal amount) {
+        if (amount.compareTo(wallet.getInvestedCoinAmount()) > 0) {
+            throw new InsufficientBalanceException("Insufficient investment amount");
+        }
+    }
+    
+    private void validateConversionFunds(PersonalWallet personalWallet, ConsomWallet consomWallet, 
+                                         int points, BigDecimal consomAmount) {
+        if (personalWallet.getBalance().intValue() < points) {
+            throw new InsufficientBalanceException("Insufficient points");
+        }
+        if (consomWallet.getBalance().compareTo(consomAmount) < 0) {
+            throw new InsufficientBalanceException("Insufficient Consom");
+        }
+    }
+    
+    private void executeConversion(PersonalWallet personalWallet, LeaWallet leaWallet, 
+                                   ConsomWallet consomWallet, ConversionResult conversion) {
+        try {
+            leaWallet.addToBalance(conversion.getLeaAmount());
+            consomWallet.removeFromBalance(conversion.getConsomAmount());
+            personalWallet.removeFromBalance(BigDecimal.valueOf(conversion.getPoints()));
+        } catch (AmountCannotBeNegativeException e) {
+            throw new WalletException("Failed to convert points", e);
+        }
+    }
+    
+    @SafeVarargs
+    private void saveWallets(Wallet... wallets) {
+        for (Wallet wallet : wallets) {
+            walletRepository.save(wallet);
+        }
+    }
+}

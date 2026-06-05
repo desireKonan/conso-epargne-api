@@ -1,0 +1,34 @@
+// ConversionCalculator.java
+package com.app.conso_epargne.admin.services.wallet;
+
+import lombok.Value;
+import java.math.BigDecimal;
+
+@Value
+public class ConversionCalculator {
+    private static final BigDecimal POINTS_TO_LEA_RATE = new BigDecimal("0.002");
+    private static final int POINTS_PER_CONSOM = 25;
+    private final int points;
+    private final BigDecimal leaAmount;
+    private final BigDecimal consomAmount;
+    
+    public static ConversionResult calculate(int points) {
+        BigDecimal leaAmount = BigDecimal.valueOf(points).multiply(POINTS_TO_LEA_RATE);
+        BigDecimal consomAmount = BigDecimal.valueOf(points / POINTS_PER_CONSOM);
+        return new ConversionResult(points, leaAmount, consomAmount);
+    }
+    
+    @Value
+    public static class ConversionResult {
+        int points;
+        BigDecimal leaAmount;
+        BigDecimal consomAmount;
+        
+        public String getSuccessMessage(int originalPoints) {
+            return String.format(
+                "Conversion successful: %d Pts → %s Lea and -%s Consom.",
+                originalPoints, leaAmount, consomAmount
+            );
+        }
+    }
+}

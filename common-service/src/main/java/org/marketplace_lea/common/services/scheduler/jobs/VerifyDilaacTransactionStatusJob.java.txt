@@ -1,0 +1,98 @@
+package com.app.conso_epargne.admin.services.scheduler.jobs;
+
+import provider.dilaac.client.com.conso_epargne.prometheus_service.DilaacPaymentProvider;
+import services.com.conso_epargne.prometheus_service.TransactionService;
+import services.scheduler.services.com.conso_epargne.prometheus_service.PaymentSchedulerService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.springframework.stereotype.Component;
+
+@Slf4j
+@Component
+@RequiredArgsConstructor
+public class VerifyDilaacTransactionStatusJob implements Job {
+    private final DilaacPaymentProvider dilaacPaymentProvider;
+    private final TransactionService transactionService;
+    private final PaymentSchedulerService paymentSchedulerService;
+    
+    @Override
+    public void execute(JobExecutionContext context) throws JobExecutionException {
+        JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
+        String transactionId = jobDataMap.getString("transactionId");
+        String transactionType = jobDataMap.getString("transactionType");
+        
+        try {
+            log.debug("Executing Dilaac status check for transaction: {}", transactionId);
+            
+            // Vérifier le statut
+            String status = dilaacPaymentProvider(transactionId);
+            
+            // Traiter selon le statut
+            processTransactionStatus(transactionId, transactionType, status);
+            
+            // Arrêter la vérification si terminé
+            if (!"PENDING".equals(status)) {
+                paymentSchedulerService.stopDilaacTransactionStatusCheck(transactionId);
+                log.info("Stopped status check for transaction: {} with status: {}", 
+                        transactionId, status);
+            }
+            
+        } catch (Exception e) {
+            log.error("Error executing Dilaac status check for transaction: {}", 
+                     transactionId, e);
+            handleJobError(transactionId, e);
+        }
+    }
+    
+    private void processTransactionStatus(String transactionId, String transactionType, 
+                                        String status) throws Exception {
+        
+        switch (status) {
+            case "SUCCESS":
+                handleSuccessfulTransaction(transactionId, transactionType);
+                break;
+            case "PENDING":
+                log.debug("Transaction {} still pending", transactionId);
+                break;
+            default:
+                handleFailedTransaction(transactionId, transactionType);
+                break;
+        }
+    }
+    
+    private void handleSuccessfulTransaction(String transactionId, String transactionType) 
+            throws Exception {
+        
+        if ("ORDER_PAYMENT".equals(transactionType)) {
+            transactionService.validateOrderPayment(transactionId);
+        } else {
+            transactionService.validateTransaction(transactionId, true);
+        }
+        
+        log.info("Transaction {} successfully processed", transactionId);
+    }
+    
+    private void handleFailedTransaction(String transactionId, String transactionType) 
+            throws Exception {
+        
+        if ("ORDER_PAYMENT".equals(transactionType)) {
+            transactionService.invalidateOrderPayment(transactionId);
+        } else {
+            transactionService.validateTransaction(transactionId, false);
+        }
+        
+        log.warn("Transaction {} failed", transactionId);
+    }
+    
+    private void handleJobError(String transactionId, Exception e) {
+        // Log supplémentaire
+        log.error("Job execution failed for transaction: {}", transactionId, e);
+        
+        // TODO: Envoyer une notification d'erreur
+        // mailSenderService.sendSchedulerErrorNotification(transactionId, e);
+    }
+}

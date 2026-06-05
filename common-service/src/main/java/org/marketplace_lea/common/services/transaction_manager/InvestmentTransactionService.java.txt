@@ -1,0 +1,225 @@
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+// InvestmentTransactionService.java - Service délégué
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class InvestmentTransactionService {
+    
+    private final WalletService walletService;
+    private final TransactionService transactionService;
+    private final AccountService accountService;
+    private final NotificationService notificationService;
+    
+    @Transactional
+    public void purchaseInvestment(InvestmentRequest request) {
+        validateInvestmentRequest(request);
+        
+        LeaWallet investorWallet = walletService.getLeaWallet(request.getAccount());
+        InvestmentWallet investmentWallet = request.getInvestment().getWallet();
+        
+        BigDecimal totalAmount = request.getNumberOfTokens()
+                .multiply(request.getInvestment().getMinCoinAmountToBuy());
+        
+        validateInvestmentAvailability(request.getInvestment(), totalAmount);
+        validateSufficientBalance(investorWallet, totalAmount);
+        
+        Transaction transaction = createInvestmentTransaction(
+                investorWallet,
+                investmentWallet,
+                totalAmount,
+                request.getAccount()
+        );
+        
+        updateAccountInvestment(request.getAccount(), request.getInvestment(), totalAmount);
+        investorWallet.invest(totalAmount);
+        
+        transactionService.validateTransaction(transaction, true);
+        accountService.save(request.getAccount());
+    }
+    
+    @Transactional
+    public void distributeProfits(ProfitDistributionRequest request) {
+        validateProfitDistribution(request);
+        
+        Investment investment = request.getInvestment();
+        BigDecimal profitPerToken = calculateProfitPerToken(
+                request.getTotalAmount(),
+                investment.getBalance()
+        );
+        
+        InvestmentProfitPayment profitPayment = createProfitPayment(
+                investment,
+                request.getTotalAmount(),
+                profitPerToken
+        );
+        
+        List<ProfitDistribution> distributions = calculateDistributions(
+                investment.getMembers(),
+                profitPerToken
+        );
+        
+        processDistributions(distributions, profitPayment);
+        
+        investmentService.changeAvailability(investment, false);
+        profitPayment.validate();
+        profitPaymentRepository.save(profitPayment);
+        investmentService.changeAvailability(investment, true);
+    }
+    
+    private void validateInvestmentRequest(InvestmentRequest request) {
+        if (request.getNumberOfTokens().signum() <= 0) {
+            throw new AmountCannotBeNegativeException();
+        }
+        
+        if (!request.getInvestment().isAvailable()) {
+            throw new ApplicationException("L'investissement n'est plus disponible");
+        }
+    }
+    
+    private void validateInvestmentAvailability(Investment investment, BigDecimal requiredAmount) {
+        if (requiredAmount.compareTo(investment.getAvailableCoinAmount()) > 0) {
+            throw new ApplicationException(
+                    "Le nombre de jetons demandé excède le nombre disponible"
+            );
+        }
+    }
+    
+    private void validateSufficientBalance(LeaWallet wallet, BigDecimal requiredAmount) {
+        if (wallet.getBalance().compareTo(requiredAmount) < 0) {
+            throw new InsufficientFundException(
+                    "Solde insuffisant en jetons Léa"
+            );
+        }
+    }
+    
+    private Transaction createInvestmentTransaction(
+            Wallet source,
+            Wallet destination,
+            BigDecimal amount,
+            Account initiator
+    ) {
+        Transaction transaction = transactionService.createNewTransaction(
+                source,
+                destination,
+                amount.doubleValue(),
+                TransactionType.INVESTMENT_PAYMENT
+        );
+        
+        transaction.setCurrency(DeviseValue.LEA.name());
+        transaction.setInitiator(initiator);
+        
+        return transaction;
+    }
+    
+    private void updateAccountInvestment(Account account, Investment investment, BigDecimal amount) {
+        account.getAccountInvestments().stream()
+                .filter(ai -> ai.investmentId().equals(investment.getId()))
+                .findFirst()
+                .ifPresentOrElse(
+                        ai -> ai.addToLeaAmount(amount.floatValue()),
+                        () -> account.getAccountInvestments().add(
+                                new AccountInvestment(account, investment, amount.floatValue())
+                        )
+                );
+    }
+    
+    private BigDecimal calculateProfitPerToken(BigDecimal totalAmount, BigDecimal totalTokens) {
+        return totalAmount.divide(totalTokens, RoundingMode.FLOOR);
+    }
+    
+    private InvestmentProfitPayment createProfitPayment(
+            Investment investment,
+            BigDecimal totalAmount,
+            BigDecimal profitPerToken
+    ) {
+        return InvestmentProfitPayment.builder()
+                .investment(investment)
+                .totalAmount(totalAmount)
+                .profitPerToken(profitPerToken)
+                .investorCount(investment.getMembers().size())
+                .build();
+    }
+    
+    private List<ProfitDistribution> calculateDistributions(
+            List<AccountInvestment> members,
+            BigDecimal profitPerToken
+    ) {
+        return members.stream()
+                .map(member -> ProfitDistribution.builder()
+                        .account(member.getAccount())
+                        .amount(profitPerToken.multiply(
+                                BigDecimal.valueOf(member.getLeaCoinAmount())
+                        ))
+                        .build())
+                .collect(Collectors.toList());
+    }
+    
+    private void processDistributions(
+            List<ProfitDistribution> distributions,
+            InvestmentProfitPayment profitPayment
+    ) {
+        List<Transaction> transactions = new ArrayList<>();
+        List<LeaWallet> wallets = new ArrayList<>();
+        
+        for (ProfitDistribution distribution : distributions) {
+            LeaWallet wallet = walletService.getLeaWallet(distribution.getAccount());
+            wallet.addInvestmentProfit(distribution.getAmount());
+            wallets.add(wallet);
+            
+            Transaction transaction = createProfitTransaction(
+                    wallet,
+                    distribution.getAmount(),
+                    profitPayment
+            );
+            transactions.add(transaction);
+            
+            sendProfitNotification(distribution);
+        }
+        
+        walletService.saveAll(wallets);
+        transactions.forEach(Transaction::validate);
+        transactionService.save(transactions);
+        
+        profitPayment.setEffectiveSharedAmount(
+                distributions.stream()
+                        .map(ProfitDistribution::getAmount)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        );
+        profitPayment.setEffectivePaidInvestorCount(distributions.size());
+    }
+    
+    private Transaction createProfitTransaction(
+            LeaWallet destination,
+            BigDecimal amount,
+            InvestmentProfitPayment profitPayment
+    ) {
+        Transaction transaction = new Transaction();
+        transaction.setId(GeneratorUtils.generateTransactionId());
+        transaction.setDestination(destination);
+        transaction.setAmount(amount);
+        transaction.setTransactionType(INVESTMENT_PROFIT_PAYMENT);
+        transaction.setInitiator(accountService.getSystemAccount());
+        transaction.setCurrency(DeviseValue.POINT.name());
+        transaction.setObjectId(profitPayment.getId());
+        transaction.setCoinToCurrencyChangeAmount(
+                BigDecimal.valueOf(configService.getExchangeRate())
+        );
+        
+        return transaction;
+    }
+    
+    private void sendProfitNotification(ProfitDistribution distribution) {
+        String title = "Bénéfices investissements!";
+        String message = String.format(
+                "Vous avez reçu %s point(s) des bénéfices de votre investissement.",
+                distribution.getAmount().intValue()
+        );
+        
+        notificationService.sendPushNotification(
+                distribution.getAccount(),
+                title,
+                message
+        );
+    }
+}

@@ -1,0 +1,145 @@
+package org.marketplace_lea.application.configuration.data_initializer;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.common.service.storage.StorageService;
+import org.marketplace_lea.common.entities.CurrencyV2Entity;
+import org.marketplace_lea.common.entities.account.AccountTypeV2Entity;
+import org.marketplace_lea.common.repositories.CurrencyJpaRepository;
+import org.marketplace_lea.common.repositories.account.AccountTypeV2JpaRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class JsonDataInitializationService {
+    private final AccountTypeV2JpaRepository accountTypeV2JpaRepository;
+    private final CurrencyJpaRepository currencyJpaRepository;
+    private final StorageService storageService;
+    private final ObjectMapper objectMapper;
+
+    @Value("${app.data-init.enabled:true}")
+    private boolean initializationEnabled;
+
+    @Value("${app.data-init.reset-before-init:false}")
+    private boolean resetBeforeInit;
+
+    @Value("${app.data-init.file:classpath:config/data.json}")
+    private Resource jsonDataFile;
+
+
+    @Transactional
+    public void initialize() {
+        if (!initializationEnabled) {
+            log.info("Initialisation des données désactivée via configuration.");
+            return;
+        }
+
+
+        if (resetBeforeInit) {
+            log.warn("=== RESET BEFORE INIT ACTIF : suppression de toutes les données existantes ===");
+            cleanAllConfigurationData();
+        }
+
+        if (!resetBeforeInit && isAlreadyInitialized()) {
+            log.info("Données déjà initialisées (utilisateur admin trouvé). Skip.");
+            return;
+        }
+
+        try {
+            InitDataConfig config = objectMapper.readValue(jsonDataFile.getInputStream(), InitDataConfig.class);
+            initializeFromConfig(config);
+
+            /// Initialisation de la configuration
+            storageService.init();
+            log.info("Initialisation terminée avec succès.");
+        } catch (IOException e) {
+            log.error("Impossible de lire le fichier de configuration JSON : {}", e.getMessage(), e);
+            throw new RuntimeException("Erreur critique au démarrage : lecture JSON échouée", e);
+        }
+    }
+
+    private boolean isAlreadyInitialized() {
+        // On considère que si l'utilisateur admin par défaut existe, les données sont déjà en place
+        // Vous pouvez adapter selon votre besoin
+        return accountTypeV2JpaRepository.count() > 0 && currencyJpaRepository.count() > 0;
+        // Ou plus précis : userService.findByUsername(config.getAdminUser().getUsername()).isPresent()
+        // Mais on n'a pas encore le config ici, donc on utilise un autre critère.
+        // Pour plus de robustesse, on pourrait vérifier l'existence d'un groupe particulier.
+        // Ici, on utilisera une méthode plus tard après avoir lu le config.
+        // Pour simplifier, on lira le config d'abord, puis on vérifiera si l'admin existe.
+        // Refactorons un peu :
+    }
+
+    private void initializeFromConfig(InitDataConfig config) {
+        // 1. Account Types
+        for (var def : config.getAccountTypes()) {
+            createAccountTypeIfNotExists(def);
+        }
+
+        // 2. Currencies
+        createCurrency(config.getCurrencies());
+    }
+
+
+    private void createCurrency(List<InitDataConfig.CurrencyDef> currencyDefs) {
+        long currencyCount = currencyJpaRepository.count();
+
+        if (!currencyDefs.isEmpty() && currencyCount == 0) {
+            List<CurrencyV2Entity> currencies = currencyDefs.stream()
+                    .map(this::buildCurrency)
+                    .toList();
+
+            currencyJpaRepository.saveAllAndFlush(currencies);
+            log.info("Création des devises !");
+        }
+    }
+
+
+    private void createAccountTypeIfNotExists(InitDataConfig.AccountTypeDef def) {
+        if (accountTypeV2JpaRepository.findById(def.getName()).isEmpty()) {
+            AccountTypeV2Entity accountType = AccountTypeV2Entity.builder()
+                    .id(def.getName())
+                    .label(def.getLabel())
+                    .withdrawalFees(def.getPercentage())
+                    .voucherFees(def.getCashback())
+                    .build();
+            accountType.setCreatedAt(LocalDateTime.now());
+            accountTypeV2JpaRepository.save(accountType);
+            log.info("AccountType '{}' créé.", def.getName());
+        } else {
+            log.debug("AccountType '{}' existe déjà.", def.getName());
+        }
+    }
+
+    private CurrencyV2Entity buildCurrency(InitDataConfig.CurrencyDef currencyDef) {
+        var currency = new CurrencyV2Entity();
+        currency.setCode(currencyDef.getCode());
+        currency.setLabel(currencyDef.getName());
+        currency.setDescription(currencyDef.getDescription());
+        currency.setCreatedAt(LocalDateTime.now());
+        return currency;
+    }
+
+    private void cleanAllConfigurationData() {
+        log.warn("=== NETTOYAGE TOTAL DES DONNÉES DE CONFIGURATION ===");
+
+        // 1. Dissocier les groupes des utilisateurs (s'il y a une contrainte)
+        // Si User a une foreign key vers UserGroup, il faut d'abord la supprimer.
+        // 6. Types de compte
+        accountTypeV2JpaRepository.deleteAllInBatch();
+
+        // 8. Devises.
+        currencyJpaRepository.deleteAllInBatch();
+
+        log.info("Nettoyage terminé.");
+    }
+}

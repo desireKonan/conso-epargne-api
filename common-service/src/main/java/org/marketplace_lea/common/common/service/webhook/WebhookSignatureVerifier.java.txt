@@ -1,0 +1,98 @@
+package com.app.conso_epargne.admin.common.service.webhook;
+
+import jakarta.crypto.Mac;
+import jakarta.crypto.spec.SecretKeySpec;
+import java.util.Base64;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import java.util.Arrays;
+
+
+@Slf4j
+@Component
+public final class WebhookSignatureVerifier {
+    private static final String HMAC_SHA256 = "HmacSHA256";
+
+    // Méthode principale pour vérifier la signature
+    public boolean verifySignature(String noWalletSignature, String body, String webhookSecret, String webhookUniqueKey) {
+        try {
+            // Extraire la clé et les signatures de l'en-tête
+            String key = extractKey(noWalletSignature);
+            System.out.println("Clé extraite : " + key);  // Afficher la clé extraite
+
+            String[] signatures = extractSignatures(noWalletSignature);
+            System.out.println("Signatures extraites : " + Arrays.toString(signatures));  // Afficher toutes les signatures extraites
+
+            // Calculer la signature attendue
+            String calculatedSignature = calculateSignature(body, webhookSecret, webhookUniqueKey, key);
+            System.out.println("Signature calculée : " + calculatedSignature);  // Afficher la signature calculée
+
+            // Comparer la signature calculée avec celles présentes dans l'en-tête
+            for (String signature : signatures) {
+                System.out.println("Comparaison avec la signature dans l'en-tête : " + signature);  // Afficher chaque signature
+                if (signature.equals(calculatedSignature)) {
+                    return true; // Signature valide
+                }
+            }
+
+            return false; // Signature non valide
+
+        } catch (Exception e) {
+            // Gestion des erreurs
+            e.printStackTrace();  // Afficher les erreurs
+            return false;
+        }
+    }
+
+    // Extraire la clé de la signature (par exemple : "key=XXXX")
+    private String extractKey(String signature) {
+        String[] parts = signature.split(",");
+        for (String part : parts) {
+            if (part.startsWith("key=")) {
+                String key = part.split("=")[1]; // Renvoie la valeur après "key="
+                System.out.println("Clé extraite : " + key);  // Afficher la clé extraite
+                return key;
+            }
+        }
+        return null; // Si la clé n'est pas trouvée
+    }
+
+    // Extraire les signatures de l'en-tête (par exemple : "signature=XXXX")
+    private String[] extractSignatures(String signature) {
+        String[] parts = signature.split(",");
+        String[] signatures = Arrays.stream(parts) // Convertir le tableau en Stream
+                .filter(part -> part.startsWith("signature=")) // Filtrer les signatures
+                .map(part -> part.split("=")[1]) // Extraire la valeur de la signature
+                .toArray(String[]::new); // Convertir le stream en tableau de String
+        System.out.println("Signatures extraites : " + Arrays.toString(signatures));  // Afficher toutes les signatures extraites
+        return signatures;
+    }
+
+    // Calculer la signature attendue en utilisant le payload et les clés secrètes
+    private String calculateSignature(String body, String webhookSecret, String webhookUniqueKey, String key) throws Exception {
+        // Créer la clé en HMAC avec le WebhookUniqueKey et la clé extraite
+        String keyEncrypted = hmacSha256(key, webhookUniqueKey);
+        System.out.println("Clé encryptée avec webhookUniqueKey : " + keyEncrypted);  // Afficher la clé encryptée
+
+        // Construire le payload : clé chiffrée + corps de la requête
+        String payloadWithKey = keyEncrypted + body;
+        System.out.println("Payload avec clé et corps : " + payloadWithKey);  // Afficher le payload
+
+        // Calculer la signature finale en HMAC avec le webhookSecret
+        return hmacSha256(payloadWithKey, webhookSecret);
+    }
+
+    // HMAC-SHA256 avec un secret donné
+    private String hmacSha256(String data, String secret) throws Exception {
+        Mac mac = Mac.getInstance(HMAC_SHA256);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secret.getBytes(), HMAC_SHA256);
+        mac.init(secretKeySpec);
+        byte[] hash = mac.doFinal(data.getBytes());
+
+        // Retourner le hachage encodé en Base64
+        String base64Encoded = Base64.getEncoder().encodeToString(hash);
+        System.out.println("HMAC SHA256 : " + base64Encoded);  // Afficher le résultat HMAC SHA256
+        return base64Encoded;
+    }
+}

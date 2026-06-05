@@ -1,0 +1,104 @@
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+// Utility classes
+@Component
+@Slf4j
+public class SavingsDispatcher {
+    
+    public static void dispatch(
+            DispatchRequest request,
+            BiConsumer<Account, BigDecimal> personalDispatch,
+            BiConsumer<Account, BigDecimal> networkDispatch
+    ) {
+        if (request.account() == null) {
+            return;
+        }
+        
+        Collect collect = request.account().currentCollect();
+        
+        if (collect != null && collect.isStarted()) {
+            processCollectDonation(request.account(), request.amount(), collect);
+            return;
+        }
+        
+        if (request.isCashbackActive() || !request.currentSubscriptions().isEmpty()) {
+            BigDecimal personalAmount = calculatePersonalAmount(request);
+            personalDispatch.accept(request.account(), personalAmount);
+            
+            BigDecimal networkAmount = calculateNetworkAmount(request);
+            if (networkAmount.signum() > 0) {
+                networkDispatch.accept(request.account(), networkAmount);
+            }
+        }
+    }
+    
+    private static BigDecimal calculatePersonalAmount(DispatchRequest request) {
+        BigDecimal baseAmount = request.amount();
+        
+        if (!request.currentSubscriptions().isEmpty()) {
+            ConsoSubscription subscription = request.currentSubscriptions().get(0);
+            if (ConsoSubscriptionType.OR.value().equals(subscription.getType())) {
+                return baseAmount.multiply(BigDecimal.valueOf(2));
+            }
+        }
+        
+        return baseAmount;
+    }
+    
+    private static BigDecimal calculateNetworkAmount(DispatchRequest request) {
+        if (request.currentSubscriptions().isEmpty()) {
+            return request.amount().multiply(NETWORK_DISPATCH_RATE);
+        }
+        
+        ConsoSubscription subscription = request.currentSubscriptions().get(0);
+        if (ConsoSubscriptionType.SOLIDARITY_FUND.value().equals(subscription.getType())) {
+            return request.amount().multiply(SOLIDARITY_FUND_RATE);
+        }
+        
+        return request.amount().multiply(NETWORK_DISPATCH_RATE);
+    }
+    
+    private static void processCollectDonation(Account account, BigDecimal amount, Collect collect) {
+        // Implémentation spécifique pour les dons aux collectes
+    }
+}
+
+@Component
+@Slf4j
+public class NetworkDispatcher {
+    
+    public static void dispatchToNetwork(
+            Account account,
+            BigDecimal amount,
+            int maxHeight,
+            TriConsumer<Account, BigDecimal, Account> paymentProcessor
+    ) {
+        int currentHeight = 1;
+        Account parent = account.getParent();
+        
+        while (parent != null && !parent.isSystem() && currentHeight <= maxHeight) {
+            paymentProcessor.accept(parent, amount, account);
+            
+            Account grandParent = findNextActiveParent(parent);
+            if (grandParent == null) {
+                break;
+            }
+            
+            parent = grandParent;
+            currentHeight++;
+        }
+    }
+    
+    private static Account findNextActiveParent(Account account) {
+        Account parent = account.getParent();
+        while (parent != null && !parent.isActive()) {
+            parent = parent.getParent();
+        }
+        return parent;
+    }
+}
+
+@FunctionalInterface
+public interface TriConsumer<T, U, V> {
+    void accept(T t, U u, V v);
+}

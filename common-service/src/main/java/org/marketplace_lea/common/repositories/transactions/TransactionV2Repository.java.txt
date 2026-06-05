@@ -1,0 +1,66 @@
+package org.marketplace_lea.repositories.transactions;
+
+import com.conso_epargne.common_service.entities.account.Account;
+import com.conso_epargne.common_service.entities.transaction.Transaction;
+import com.conso_epargne.common_service.entities.transaction.TransactionStatus;
+import com.conso_epargne.common_service.entities.transaction.TransactionType;
+import com.conso_epargne.common_service.entities.v2.transaction.TransactionV2Entity;
+import feign.Param;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+public interface TransactionV2Repository extends JpaRepository<Transaction, String>, JpaSpecificationExecutor<TransactionV2Entity> {
+    // Requêtes JPQL pour remplacer les méthodes de dérivation
+    @Query("SELECT t FROM Transaction t WHERE t.transactionType = :type ORDER BY t.createdAt DESC")
+    List<Transaction> findAllByTransactionType(@Param("type") TransactionType type);
+
+    @Query("SELECT t FROM Transaction t WHERE t.transactionType = :type AND t.initiator = :initiator ORDER BY t.createdAt DESC")
+    List<Transaction> findAllByTypeAndInitiator(@Param("type") TransactionType type, @Param("initiator") Account initiator);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.status = :status")
+    Long countByStatus(@Param("status") TransactionStatus status);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.transactionType = :type")
+    Long countByTransactionType(@Param("type") TransactionType type);
+
+    @Query("SELECT COUNT(t) FROM Transaction t WHERE t.transactionType = :type AND t.status = :status")
+    Long countByTransactionTypeAndStatus(@Param("type") TransactionType type, @Param("status") TransactionStatus status);
+
+    @Query("SELECT t FROM Transaction t WHERE t.objectId = :objectId ORDER BY t.createdAt DESC")
+    List<Transaction> findByObjectId(@Param("objectId") String objectId);
+
+    @Query("SELECT t FROM Transaction t WHERE t.initiator = :account ORDER BY t.createdAt DESC")
+    Set<Transaction> findByInitiatorOrderByCreatedAtDesc(@Param("account") Account account);
+
+    @Query("SELECT t FROM Transaction t WHERE t.transactionType IN :types ORDER BY t.createdAt DESC")
+    Set<Transaction> getAllByTypeIn(@Param("types") List<TransactionType> types);
+
+    @Query("SELECT t FROM Transaction t WHERE t.initiator.id = :initiatorId AND t.transactionType = :type AND t.status = :status ORDER BY t.createdAt DESC")
+    List<Transaction> findPendingTransactions(
+            @Param("type") TransactionType type,
+            @Param("initiatorId") String initiatorId,
+            @Param("status") TransactionStatus status
+    );
+
+    // Nouvelles requêtes JPQL pour optimiser les performances
+    @Query("SELECT t FROM Transaction t WHERE t.status IN :statuses ORDER BY t.createdAt DESC")
+    List<Transaction> findByStatusesIn(@Param("statuses") List<TransactionStatus> statuses);
+
+    @Query("SELECT t FROM Transaction t WHERE t.createdAt BETWEEN :startDate AND :endDate ORDER BY t.createdAt DESC")
+    List<Transaction> findByCreatedAtBetween(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+
+    @Query("SELECT t FROM Transaction t WHERE t.source.id = :walletId OR t.destination.id = :walletId ORDER BY t.createdAt DESC")
+    List<Transaction> findByWallet(@Param("walletId") String walletId);
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.status = :status AND t.transactionType = :type")
+    BigDecimal sumAmountByStatusAndType(@Param("status") TransactionStatus status, @Param("type") TransactionType type);
+
+    @Query("SELECT t FROM Transaction t WHERE t.initiator = :account AND t.status = :status AND t.transactionType IN :types ORDER BY t.createdAt DESC")
+    Set<Transaction> getByInitiator(@Param("account") Account account, @Param("types") List<TransactionType> types, @Param("status") TransactionStatus status);
+}

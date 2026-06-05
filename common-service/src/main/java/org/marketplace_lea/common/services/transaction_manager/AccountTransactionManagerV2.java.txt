@@ -1,0 +1,229 @@
+// AccountTransactionManager.java - Version refactorée
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+import exceptions.common.com.conso_epargne.prometheus_service.WalletException;
+import entities.com.conso_epargne.prometheus_service.CurrencyValue;
+import entities.com.conso_epargne.prometheus_service.Membership;
+import com.app.conso_epargne.admin.entities.account.AccountEntityccount;
+import collect.entities.com.conso_epargne.prometheus_service.Collect;
+import investments.entities.com.conso_epargne.prometheus_service.Investment;
+import order.entities.com.conso_epargne.prometheus_service.Order;
+import transaction.entities.com.conso_epargne.prometheus_service.Transaction;
+import wallets.entities.com.conso_epargne.prometheus_service.Wallet;
+import repositories.com.conso_epargne.prometheus_service.AppConfigRepository;
+import repositories.com.conso_epargne.prometheus_service.InvestmentProfitPaymentRepository;
+import repositories.com.conso_epargne.prometheus_service.OrderItemRepository;
+import com.app.conso_epargne.admin.services.*;
+import subscription.services.com.conso_epargne.prometheus_service.SubscriptionService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.security.auth.login.AccountNotFoundException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import static utils.common.com.conso_epargne.prometheus_service.TypeUtils.booleanValue;
+import static transaction.entities.com.conso_epargne.prometheus_service.TransactionType.*;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class AccountTransactionManagerV2 {
+    
+    private final AccountService accountService;
+    private final WalletService walletService;
+    private final TransactionService transactionService;
+    private final AccountCollectService accountCollectService;
+    private final InvestmentService investmentService;
+    private final NotificationService notificationService;
+    private final SubscriptionService subscriptionService;
+    private final AppConfigRepository appConfigRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final InvestmentProfitPaymentRepository profitPaymentRepository;
+    
+    // Constantes pour éviter les magic numbers
+    private static final int MAX_SAVING_HEIGHT = 1;
+    private static final BigDecimal NETWORK_DISPATCH_RATE = new BigDecimal("0.2");
+    private static final BigDecimal SOLIDARITY_FUND_RATE = new BigDecimal("0.5");
+    private static final BigDecimal FEE_PERCENTAGE = new BigDecimal("0.01");
+    private static final BigDecimal LEAP_PARENT_RATE = new BigDecimal("0.1");
+    private static final BigDecimal LEAP_PARENT_SOLIDARITY_RATE = BigDecimal.valueOf(2);
+    private static final int MIN_VOUCHER_AMOUNT = 5000;
+    
+    // Services délégués pour séparer les responsabilités
+    private final PersonalWalletTransactionService personalWalletService;
+    private final ConsomWalletTransactionService consomWalletService;
+    private final InvestmentTransactionService investmentTransactionService;
+    private final LeaWalletTransactionService leaWalletService;
+    private final CollectTransactionService collectTransactionService;
+    
+    // ========== GESTION DES TRANSACTIONS PERSONNELLES ==========
+    
+    @Transactional
+    public Transaction makeOnlineOrderPayment(Order order) throws WalletException {
+        Account account = order.account();
+        Wallet destination = walletService.getPersonalWallet(account);
+        
+        return OnlineTransactionBuilder.builder()
+                .initiator(account)
+                .destination(destination)
+                .amount(order.totalAmount())
+                .coinAmount(BigDecimal.ZERO)
+                .transactionType(ORDER_PAYMENT)
+                .currency(DeviseValue.FCFA.name())
+                .objectId(order.getId())
+                .paymentMethod(order.paymentMethod())
+                .fees(calculateFees(order.totalAmount()))
+                .buildAndSave(transactionService);
+    }
+    
+    // ========== GESTION DES INVESTISSEMENTS ==========
+    
+    @Transactional
+    public void addInvestment(Account account, Investment investment, BigDecimal numberOfTokens) {
+        InvestmentRequest request = InvestmentRequest.builder()
+                .account(account)
+                .investment(investment)
+                .numberOfTokens(numberOfTokens)
+                .build();
+        
+        investmentTransactionService.purchaseInvestment(request);
+    }
+    
+    @Transactional
+    public void initInvestmentProfitsPayment(Investment investment, BigDecimal amount) {
+        ProfitDistributionRequest request = ProfitDistributionRequest.builder()
+                .investment(investment)
+                .totalAmount(amount)
+                .exchangeRate(configService.getExchangeRate())
+                .build();
+        
+        investmentTransactionService.distributeProfits(request);
+    }
+    
+    // ========== CONVERSIONS ==========
+    
+    @Transactional
+    public void convertToCoin(Account account, BigDecimal coinAmount) {
+        ConversionRequest request = ConversionRequest.builder()
+                .account(account)
+                .amount(coinAmount)
+                .conversionType(ConversionType.POINTS_TO_LEA)
+                .exchangeRate(configService.getExchangeRate())
+                .build();
+        
+        leaWalletService.convert(request);
+    }
+    
+    @Transactional
+    public void convertToPoint(Account account, BigDecimal coinAmount) {
+        ConversionRequest request = ConversionRequest.builder()
+                .account(account)
+                .amount(coinAmount)
+                .conversionType(ConversionType.LEA_TO_POINTS)
+                .exchangeRate(configService.getExchangeRate())
+                .build();
+        
+        leaWalletService.convert(request);
+    }
+    
+    // ========== GESTION DES COLLECTES ==========
+    
+    @Transactional
+    public void makeDonationToCollect(Account account, BigDecimal amount, Collect collect) {
+        DonationRequest request = DonationRequest.builder()
+                .donor(account)
+                .amount(amount)
+                .collect(collect)
+                .build();
+        
+        collectTransactionService.processDonation(request);
+    }
+    
+    // ========== DISPATCH D'ÉPARGNE ==========
+    
+    @Transactional
+    public void dispatchSaving(Account account, BigDecimal totalSavingAmount) {
+        DispatchRequest request = DispatchRequest.builder()
+                .account(account)
+                .amount(totalSavingAmount)
+                .isCashbackActive(isActiveCashback())
+                .currentSubscriptions(subscriptionService.getCurrentSubscriptions(account))
+                .build();
+        
+        SavingsDispatcher.dispatch(request, this::dispatchToPersonal, this::dispatchToNetwork);
+    }
+    
+    private void dispatchToPersonal(Account account, BigDecimal amount) {
+        personalWalletService.addToPersonalSaving(account, amount);
+    }
+    
+    private void dispatchToNetwork(Account account, BigDecimal amount) {
+        NetworkDispatcher.dispatchToNetwork(account, amount, MAX_SAVING_HEIGHT, this::processNetworkPayment);
+    }
+    
+    private void processNetworkPayment(Account parent, BigDecimal amount, Account initiator) {
+        personalWalletService.addNetworkSaving(parent, amount, initiator);
+    }
+    
+    // ========== BONUS PARTENAIRE ==========
+    
+    @Transactional
+    public void activatePartnerAccount(Account account) {
+        accountService.activate(account);
+        accountService.upgradeToPartner(account);
+        membershipRepository.save(new Membership(account));
+        
+        if (account.hasParent()) {
+            addPartnerBonus(account.getParent(), account);
+        }
+    }
+    
+    private void addPartnerBonus(Account parent, Account child) {
+        if (!isActiveCashback()) {
+            return;
+        }
+        
+        BigDecimal bonusAmount = BigDecimal.valueOf(accountTypeService.getPartner().getPartnerBonusAmount());
+        personalWalletService.addPartnerBonus(parent, bonusAmount, child);
+    }
+    
+    // ========== UTILITAIRES ==========
+    
+    private boolean isActiveCashback() {
+        return appConfigRepository.findByKey("commission.active.cashback")
+                .map(config -> booleanValue(config))
+                .orElse(false);
+    }
+    
+    public BigDecimal calculateFees(BigDecimal amount) {
+        return amount.multiply(FEE_PERCENTAGE)
+                .setScale(2, RoundingMode.UP);
+    }
+    
+    public Account getAccountByLogin(String login) throws AccountNotFoundException {
+        return accountService.findByLogin(login);
+    }
+    
+    @Transactional
+    public Transaction initMembershipTransactionPayment(Account account) {
+        Transaction pendingTransaction = transactionService.findCurrentMembershipPaymentTransaction(account);
+        
+        if (pendingTransaction != null) {
+            return pendingTransaction;
+        }
+        
+        BigDecimal partnerFees = BigDecimal.valueOf(accountTypeService.getPartner().getFees());
+        
+        return OnlineTransactionBuilder.builder()
+                .initiator(account)
+                .amount(partnerFees)
+                .transactionType(MEMBERSHIP_PAYMENT)
+                .currency(DeviseValue.FCFA.name())
+                .fees(calculateFees(partnerFees))
+                .buildAndSave(transactionService);
+    }
+}

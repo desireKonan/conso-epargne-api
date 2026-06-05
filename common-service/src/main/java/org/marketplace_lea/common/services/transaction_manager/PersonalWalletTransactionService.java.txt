@@ -1,0 +1,151 @@
+package com.app.conso_epargne.admin.services.transaction_manager;
+
+import com.app.conso_epargne.admin.entities.account.AccountEntityccount;
+import transaction.entities.com.conso_epargne.prometheus_service.Transaction;
+import transaction.entities.com.conso_epargne.prometheus_service.TransactionType;
+import wallets.entities.com.conso_epargne.prometheus_service.PersonalWallet;
+import services.com.conso_epargne.prometheus_service.TransactionService;
+import services.com.conso_epargne.prometheus_service.WalletService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+
+// PersonalWalletTransactionService.java - Service délégué
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class PersonalWalletTransactionService {
+    private final WalletService walletService;
+    private final TransactionService transactionService;
+    private final NotificationService notificationService;
+    
+    @Transactional
+    public void addPartnerBonus(Account account, BigDecimal amount, Account initiator) {
+        PersonalWallet wallet = walletService.getPersonalWallet(account);
+        
+        Transaction transaction = transactionService.createNewTransaction(
+                null,
+                wallet,
+                amount,
+                TransactionType.PARTNER_BONUS
+        );
+        
+        wallet.addPartnerBonus(amount);
+        transaction.setInitiator(initiator);
+        
+        transactionService.validateTransaction(transaction, true);
+        
+        sendBonusNotification(account, amount);
+    }
+    
+    @Transactional
+    public void addNetworkSaving(Account account, BigDecimal amount, Account initiator) {
+        PersonalWallet wallet = walletService.getPersonalWallet(account);
+        
+        Transaction transaction = transactionService.createNewTransaction(
+                null,
+                wallet,
+                amount,
+                TransactionType.NETWORK_PAYMENT
+        );
+        
+        if (isFirstLevel(initiator, account)) {
+            wallet.addFirstLevelSaving(amount);
+        }
+        
+        wallet.addNetworkSaving(amount);
+        transaction.setInitiator(initiator);
+        
+        transactionService.validateTransaction(transaction, true);
+        
+        sendNetworkSavingNotification(account, amount);
+    }
+    
+    @Transactional
+    public void addToPersonalSaving(Account account, BigDecimal amount) {
+        PersonalWallet wallet = walletService.getPersonalWallet(account);
+        
+        Transaction transaction = transactionService.createNewTransaction(
+                null,
+                wallet,
+                amount,
+                TransactionType.PERSONAL_SAVING
+        );
+        
+        wallet.addPersonalSaving(amount);
+        
+        transactionService.validateTransaction(transaction, true);
+    }
+    
+    @Transactional
+    public Voucher createVoucher(Account account, BigDecimal amount) {
+        validateVoucherAmount(amount);
+        
+        PersonalWallet wallet = walletService.getPersonalWallet(account);
+        BigDecimal fees = calculateVoucherFees(account, amount);
+        BigDecimal totalAmount = amount.add(fees);
+        
+        validateSufficientBalance(wallet, totalAmount);
+        
+        Transaction transaction = transactionService.createNewTransaction(
+                wallet,
+                null,
+                totalAmount,
+                TransactionType.VOUCHER_PAYMENT
+        );
+        
+        wallet.addVoucherAmount(amount);
+        wallet.removeFromBalance(totalAmount);
+        
+        transactionService.validateTransaction(transaction, true);
+        
+        return new Voucher(account, amount);
+    }
+    
+    private void validateVoucherAmount(BigDecimal amount) {
+        if (amount.compareTo(BigDecimal.valueOf(MIN_VOUCHER_AMOUNT)) < 0) {
+            throw new AmountCannotBeNegativeException(
+                    "Le montant du bon doit être supérieur ou égal à " + MIN_VOUCHER_AMOUNT + " points"
+            );
+        }
+    }
+    
+    private BigDecimal calculateVoucherFees(Account account, BigDecimal amount) {
+        BigDecimal feePercentage = BigDecimal.valueOf(account.voucherCreationFees())
+                .divide(BigDecimal.valueOf(100));
+        return amount.multiply(feePercentage);
+    }
+    
+    private void validateSufficientBalance(PersonalWallet wallet, BigDecimal requiredAmount) {
+        if (wallet.getBalance().compareTo(requiredAmount) < 0) {
+            throw new InsufficientFundException("Solde insuffisant");
+        }
+    }
+    
+    private boolean isFirstLevel(Account initiator, Account recipient) {
+        return initiator.getParent() != null && initiator.getParent().equals(recipient);
+    }
+    
+    private void sendBonusNotification(Account account, BigDecimal amount) {
+        String title = "Parrain efficace 😎";
+        String message = String.format(
+                "Vous avez reçu %s point(s) 🤑 en bonus grâce à votre filleul.",
+                amount.intValue()
+        );
+        
+        notificationService.sendPushNotification(account, title, message);
+    }
+    
+    private void sendNetworkSavingNotification(Account account, BigDecimal amount) {
+        String title = "Ça bouge dans conso 🔥🔥🔥";
+        String message = String.format(
+                "Vous avez reçu %s point(s) 🤑 des achats générés par un membre de votre réseau.",
+                amount.intValue()
+        );
+        
+        notificationService.sendPushNotification(account, title, message);
+    }
+}
