@@ -1,4 +1,4 @@
-package org.marketplace_lea.application.configuration.data_initializer;
+package org.marketplace_lea.application.configuration.data_initializer.dto;
 
 import lombok.Data;
 

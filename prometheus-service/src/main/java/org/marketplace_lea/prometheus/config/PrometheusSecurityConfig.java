@@ -34,7 +34,7 @@ public class PrometheusSecurityConfig {
      * Crée un {@link WebAuthenticationManager} configuré avec le service de détails
      * utilisateur de l'API ({@code AccountService}) et l'encodeur de mot de passe.
      *
-     * @param userDetailsService le service de chargement du compte
+     * @param accountV2Service le service de chargement du compte
      *                           ({@code AccountService})
      * @param passwordEncoder    l'encodeur BCrypt partagé
      * @return le gestionnaire d'authentification pour le domaine auth V2

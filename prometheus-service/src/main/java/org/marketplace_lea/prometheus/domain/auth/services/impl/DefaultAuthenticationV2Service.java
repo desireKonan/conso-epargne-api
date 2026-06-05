@@ -9,7 +9,7 @@ import org.marketplace_lea.common.dtos.OtpResponse;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.forms.VerifyOtpForm;
-import org.marketplace_lea.common.mapper.CustomerV2Mapper;
+import org.marketplace_lea.prometheus.domain.onboarding.forms.CustomerV2Mapper;
 import org.marketplace_lea.common.repositories.account.AccountV2JpaRepository;
 import org.marketplace_lea.common.repositories.customer.CustomerV2JpaRepository;
 import org.marketplace_lea.common.services.OTPService;

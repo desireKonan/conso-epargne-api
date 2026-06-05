@@ -1,6 +1,6 @@
 # 📘 Conso‑Epargne – Project Overview  
 
-*Version:* **2.0.1** (Spring Boot 2.7.8)  
+*Version:* **2.0.1** (Spring Boot 3.5.14)  
 *Java:* **21** (or higher)  
 *Build tool:* **Maven**  
 
@@ -102,14 +102,14 @@ com.app.consoepargne
 
 | Layer | Technology |
 |-------|------------|
-| **Framework** | Spring Boot 2.7.8 (auto‑configuration, embedded Tomcat) |
+| **Framework** | Spring Boot 3.5.14 (auto‑configuration, embedded Tomcat) |
 | **Persistence** | Spring Data JPA + Hibernate (PostgreSQL / H2 for tests) |
 | **Build** | Maven 3.8+ (`mvn clean verify`) |
 | **Testing** | JUnit 5, Mockito (unit); SpringBootTest (integration) |
 | **Static# 📘 Conso‑Epargne – Project Overview  
 
-*Version:* **1.2.0** (Spring Boot 2.7.8)  
-*Java:* **17** (or higher)  
+*Version:* **3.5.14** (Spring Boot 3.5.14)  
+*Java:* **21** (or higher)  
 *Build tool:* **Maven**  
 
 ---

@@ -11,7 +11,7 @@ import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Type;
 import org.marketplace_lea.common.forms.UpdateCredentialForm;
 import org.marketplace_lea.common.forms.UpdateCustomerForm;
-import org.marketplace_lea.common.mapper.CustomerV2Mapper;
+import org.marketplace_lea.prometheus.domain.onboarding.forms.CustomerV2Mapper;
 import org.marketplace_lea.common.repositories.WalletV2JpaRepository;
 import org.marketplace_lea.common.repositories.account.AccountSponsorshipJpaRepository;
 import org.marketplace_lea.common.repositories.account.AccountV2JpaRepository;

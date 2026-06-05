@@ -1,7 +1,7 @@
 package org.marketplace_lea.prometheus.domain.onboarding.services;
 
 import org.marketplace_lea.common.dtos.CustomerV2DTO;
-import org.marketplace_lea.common.forms.RegistrationV2Form;
+import org.marketplace_lea.prometheus.common.dto.RegistrationV2Form;
 
 /**
  * Service responsable de l'inscription (onboarding) d'un nouveau client.

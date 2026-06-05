@@ -1,25 +1,60 @@
 package org.marketplace_lea.application.configuration.data_initializer;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.marketplace_lea.application.configuration.data_initializer.dto.InitDataConfig;
+import org.marketplace_lea.application.configuration.data_initializer.dto.ParameterConfigs;
+import org.marketplace_lea.application.configuration.data_initializer.properties.DataInitializerProperties;
+import org.marketplace_lea.application.configuration.data_initializer.service.AccountTypeInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.CurrencyInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.ParameterInitializer;
+import org.marketplace_lea.common.common.service.storage.StorageService;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @Component
 @AllArgsConstructor
 public class ConsoEpargneDataInitializerV2 implements ApplicationListener<ContextRefreshedEvent> {
-    private final JsonDataInitializationService jsonDataInitializationService;
+    private final AccountTypeInitializer accountTypeInitializer;
+    private final CurrencyInitializer currencyInitializer;
+    private final ParameterInitializer parameterInitializer;
+
+    private final StorageService storageService;
+    private final ObjectMapper objectMapper;
+
+    private final DataInitializerProperties dataInitializerProperties;
 
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
-        // Le service utilise @PostConstruct, donc l'initialisation a déjà eu lieu.
-        // On peut soit appeler explicitement, soit ne rien faire.
-        // Pour éviter double appel, on retire @PostConstruct du service et on appelle ici.
-        // Choix : laisser @PostConstruct et ne rien mettre ici, ou enlever @PostConstruct et appeler.
-        // Je conseille d'enlever @PostConstruct et d'appeler ici.
-        jsonDataInitializationService.initialize();
+        if (!dataInitializerProperties.isEnabled()) {
+            log.info("Initialisation des données désactivée via configuration.");
+            return;
+        }
+
+        try {
+            /// Initialisation de la configuration
+            storageService.init();
+
+            var urls = dataInitializerProperties.getUrls();
+            InitDataConfig config = objectMapper.readValue(urls.get("data").getInputStream(), InitDataConfig.class);
+            accountTypeInitializer.initialize(config.getAccountTypes(), dataInitializerProperties.isResetBeforeInit());
+            currencyInitializer.initializeCurrencies(config.getCurrencies(), dataInitializerProperties.isResetBeforeInit());
+
+            List<ParameterConfigs> parameterConfigs = objectMapper.readValue(urls.get("parameters").getInputStream(), new TypeReference<>() {
+            });
+            parameterInitializer.initializeParameters(parameterConfigs, dataInitializerProperties.isResetBeforeInit());
+            log.info("Initialisation terminée avec succès.");
+        } catch (IOException e) {
+            log.error("Impossible de lire le fichier de configuration JSON : {}", e.getMessage(), e);
+            throw new RuntimeException("Erreur critique au démarrage : lecture JSON échouée", e);
+        }
     }
 }

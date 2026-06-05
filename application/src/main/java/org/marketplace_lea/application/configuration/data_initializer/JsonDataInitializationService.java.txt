@@ -46,7 +46,7 @@ public class JsonDataInitializationService {
 
         if (resetBeforeInit) {
             log.warn("=== RESET BEFORE INIT ACTIF : suppression de toutes les données existantes ===");
-            cleanAllConfigurationData();
+            //cleanAllConfigurationData();
         }
 
         if (!resetBeforeInit && isAlreadyInitialized()) {

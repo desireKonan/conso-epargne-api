@@ -5,7 +5,7 @@ import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataExce
 import org.marketplace_lea.common.dtos.CustomerV2DTO;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.forms.CreateCustomerForm;
-import org.marketplace_lea.common.mapper.CustomerV2Mapper;
+import org.marketplace_lea.prometheus.domain.onboarding.forms.CustomerV2Mapper;
 import org.marketplace_lea.common.repositories.customer.CustomerV2JpaRepository;
 import org.marketplace_lea.prometheus.domain.customer.forms.CustomerLockForm;
 import org.marketplace_lea.prometheus.domain.customer.forms.CustomerSearchForm;

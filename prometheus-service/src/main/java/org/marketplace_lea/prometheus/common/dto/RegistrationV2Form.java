@@ -1,4 +1,4 @@
-package org.marketplace_lea.common.forms;
+package org.marketplace_lea.prometheus.common.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,15 @@
-package org.marketplace_lea.common.mapper;
+package org.marketplace_lea.prometheus.domain.onboarding.forms;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import org.marketplace_lea.common.dtos.CustomerTokenInfo;
 import org.marketplace_lea.common.dtos.CustomerV2DTO;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.forms.CreateCustomerForm;
-import org.marketplace_lea.common.forms.RegistrationV2Form;
-import org.mapstruct.*;
+import org.marketplace_lea.prometheus.common.dto.RegistrationV2Form;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CustomerV2Mapper {

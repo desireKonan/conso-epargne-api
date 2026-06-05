@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity(name = "AppConfig")
 @Table(name = "ce_parameter_config")
-public class AppConfig {
+public class ParameterConfigEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

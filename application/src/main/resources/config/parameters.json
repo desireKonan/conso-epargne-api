@@ -1,0 +1,62 @@
+[
+  {
+    "key": "commission.active.cashback",
+    "value": "false",
+    "description": "Propriété d'activation des cashbacks",
+    "dataType": "BOOLEAN"
+  },
+  {
+    "key": "commission.rate.adherent",
+    "value": "0.10",
+    "description": "Le taux des commission à reverser (Adhérent)",
+    "dataType": "FLOAT"
+  },
+  {
+    "key": "commission.rate.parent",
+    "value": "0.05",
+    "description": "Le taux des commission à reverser (Parent)",
+    "dataType": "FLOAT"
+  },
+  {
+    "key": "default.lea.coins",
+    "value": "500",
+    "description": "Le prix unitaire d'un jeton Lea",
+    "dataType": "INT"
+  },
+  {
+    "key": "max.depth.sponsorship.account",
+    "value": "1",
+    "description": "Le nombre de parrain à rechercher",
+    "dataType": "INT"
+  },
+  {
+    "key": "multiplier.lea.points",
+    "value": "0.002",
+    "description": "Le nombre de points en multiplication",
+    "dataType": "FLOAT"
+  },
+  {
+    "key": "consom.points",
+    "value": "25",
+    "description": "Le nombre de points (ConsoM)",
+    "dataType": "INT"
+  },
+  {
+    "key": "min.voucher.amount",
+    "value": "5000",
+    "description": "Le montant minimum du voucher",
+    "dataType": "INT"
+  },
+  {
+    "key": "min.order.delay-date",
+    "value": "0",
+    "description": "La date minimum de livraison",
+    "dataType": "INT"
+  },
+  {
+    "key": "max.order.delay-date",
+    "value": "5",
+    "description": "La date maximum de livraison",
+    "dataType": "INT"
+  }
+]

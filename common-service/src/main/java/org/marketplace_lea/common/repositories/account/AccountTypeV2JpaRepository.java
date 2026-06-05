@@ -15,4 +15,7 @@ public interface AccountTypeV2JpaRepository extends JpaRepository<AccountTypeV2E
 
     @Query(value = "SELECT accT FROM AccountTypeV2 accT WHERE accT.id != :reference")
     List<AccountTypeV2Entity> getAllByNotId(@Param("reference") String reference);
+
+    @Query(value = "SELECT COUNT(accT.id) FROM AccountTypeV2 accT")
+    long countAllTypes();
 }

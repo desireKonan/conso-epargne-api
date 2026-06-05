@@ -9,12 +9,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ce_devise")
+@Entity(name = "Currency")
 public class CurrencyV2Entity extends BaseEntity {
     @Id
     @Column(nullable = false)

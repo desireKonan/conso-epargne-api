@@ -2,7 +2,7 @@ package org.marketplace_lea.prometheus.domain.onboarding.controllers;
 
 import org.marketplace_lea.common.common.constants.Router;
 import org.marketplace_lea.common.dtos.CustomerV2DTO;
-import org.marketplace_lea.common.forms.RegistrationV2Form;
+import org.marketplace_lea.prometheus.common.dto.RegistrationV2Form;
 import org.marketplace_lea.prometheus.domain.onboarding.services.CustomerOnboardingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
