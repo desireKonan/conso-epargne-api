@@ -20,8 +20,8 @@ import org.marketplace_lea.application.configuration.data_initializer.service.Lo
 import org.marketplace_lea.application.configuration.data_initializer.service.NotificationTemplateInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.ParameterInitializer;
 import org.marketplace_lea.common.common.service.storage.StorageService;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ import java.util.List;
 @Slf4j
 @Component
 @AllArgsConstructor
-public class ConsoEpargneDataInitializerV2 implements ApplicationListener<ContextRefreshedEvent> {
+public class ConsoEpargneDataInitializerV2 implements ApplicationListener<ApplicationReadyEvent> {
     private final AccountTypeInitializer accountTypeInitializer;
     private final CurrencyInitializer currencyInitializer;
     private final ParameterInitializer parameterInitializer;
@@ -45,7 +45,7 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Contex
     private final DataInitializerProperties dataInitializerProperties;
 
     @Override
-    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(@NonNull ApplicationReadyEvent event) {
         if (!dataInitializerProperties.isEnabled()) {
             log.info("Initialisation des données désactivée via configuration.");
             return;
