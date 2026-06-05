@@ -5,11 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.marketplace_lea.application.configuration.data_initializer.dto.CountryConfig;
+import org.marketplace_lea.application.configuration.data_initializer.dto.DistrictConfig;
 import org.marketplace_lea.application.configuration.data_initializer.dto.InitDataConfig;
+import org.marketplace_lea.application.configuration.data_initializer.dto.LocalityConfig;
 import org.marketplace_lea.application.configuration.data_initializer.dto.ParameterConfigs;
 import org.marketplace_lea.application.configuration.data_initializer.properties.DataInitializerProperties;
 import org.marketplace_lea.application.configuration.data_initializer.service.AccountTypeInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.CountryInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.CurrencyInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.DistrictInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.LocalityInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.ParameterInitializer;
 import org.marketplace_lea.common.common.service.storage.StorageService;
 import org.springframework.context.ApplicationListener;
@@ -26,6 +32,9 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Contex
     private final AccountTypeInitializer accountTypeInitializer;
     private final CurrencyInitializer currencyInitializer;
     private final ParameterInitializer parameterInitializer;
+    private final CountryInitializer countryInitializer;
+    private final LocalityInitializer localityInitializer;
+    private final DistrictInitializer districtInitializer;
 
     private final StorageService storageService;
     private final ObjectMapper objectMapper;
@@ -51,6 +60,20 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Contex
             List<ParameterConfigs> parameterConfigs = objectMapper.readValue(urls.get("parameters").getInputStream(), new TypeReference<>() {
             });
             parameterInitializer.initializeParameters(parameterConfigs, dataInitializerProperties.isResetBeforeInit());
+
+
+            List<CountryConfig> countriesConfigs = objectMapper.readValue(urls.get("countries").getInputStream(), new TypeReference<>() {
+            });
+            countryInitializer.initializeCountries(countriesConfigs, dataInitializerProperties.isResetBeforeInit());
+
+
+            List<LocalityConfig> localityConfigs = objectMapper.readValue(urls.get("localities").getInputStream(), new TypeReference<>() {
+            });
+            localityInitializer.initializeLocalities(localityConfigs, dataInitializerProperties.isResetBeforeInit());
+
+            List<DistrictConfig> districtConfigs = objectMapper.readValue(urls.get("districts").getInputStream(), new TypeReference<>() {
+            });
+            districtInitializer.initializeDistricts(districtConfigs, dataInitializerProperties.isResetBeforeInit());
             log.info("Initialisation terminée avec succès.");
         } catch (IOException e) {
             log.error("Impossible de lire le fichier de configuration JSON : {}", e.getMessage(), e);

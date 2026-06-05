@@ -1,0 +1,1537 @@
+[
+  {
+    "id": "DIS-100030",
+    "label": "Sokoura",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-101660",
+    "label": "Phare",
+    "localityId": "LOC-167694429"
+  },
+  {
+    "id": "DIS-102622",
+    "label": "Angré",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-102926",
+    "label": "Anani",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-102954",
+    "label": "Marché",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-103863",
+    "label": "Sideci Côte d'Azur (Après barrage)",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-103996",
+    "label": "Aghien",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-105001",
+    "label": "Bellou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-106073",
+    "label": "Abris 2000",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-107192",
+    "label": "Quartier Ebrié",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-109884",
+    "label": "Bonoumin",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-110668",
+    "label": "Sicogi",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-111374",
+    "label": "Terre Rouge",
+    "localityId": "LOC-105396062"
+  },
+  {
+    "id": "DIS-111732",
+    "label": "Sogephia ",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-113031",
+    "label": "Anonkoua-kouté",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-113254",
+    "label": "Pharmacie Fatima",
+    "localityId": "LOC-201"
+  },
+  {
+    "id": "DIS-114182",
+    "label": "Anoumambo",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-114189",
+    "label": "Energie",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-114826",
+    "label": "Mossikro",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-114890",
+    "label": "Commerce ",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-115457",
+    "label": "Coup de frein",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-115564",
+    "label": "Cité Verte ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-115628",
+    "label": "Abatta",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-116191",
+    "label": "Petit Bouaké ",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-117029",
+    "label": "Gonzagueville",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-117840",
+    "label": "Moossou",
+    "localityId": "LOC-167694429"
+  },
+  {
+    "id": "DIS-118257",
+    "label": "Akroumiabla",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-118268",
+    "label": "Marahoué",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-118800",
+    "label": "Cité CIE",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-119584",
+    "label": "Sicogi",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-121419",
+    "label": "Anonkoua",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-121619",
+    "label": "Sopim Valon",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-121982",
+    "label": "Derrière Wharf",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-122220",
+    "label": "Zoo Sideci ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-122496",
+    "label": "Kizito",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-123909",
+    "label": "Samaké",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-124287",
+    "label": "Abia-Koumassi",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-124567",
+    "label": "Bangui",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-124861",
+    "label": "Nouveau quartier ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-126363",
+    "label": "8ème tranche ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-126869",
+    "label": "Williamsville I",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-126930",
+    "label": "Toumodi",
+    "localityId": "LOC-287302700"
+  },
+  {
+    "id": "DIS-127501",
+    "label": "Faya",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-127729",
+    "label": "Gonaté",
+    "localityId": "LOC-158950788"
+  },
+  {
+    "id": "DIS-127875",
+    "label": "Résidentiel Nouveau ",
+    "localityId": "LOC-579202112"
+  },
+  {
+    "id": "DIS-128053",
+    "label": "Cité Olympe",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-128309",
+    "label": "Assabou",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-128315",
+    "label": "Habitat",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-129311",
+    "label": "Koweït ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-129619",
+    "label": "Sideci ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-129841",
+    "label": "INJS",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-130028",
+    "label": "Abobo Nord",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-130040",
+    "label": "Nouveau camp",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-130164",
+    "label": "Adjamé Nord",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-131793",
+    "label": "Institut Pasteur ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-135291",
+    "label": "Bourgeois ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-135678",
+    "label": "Canebière",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-135793",
+    "label": "Mankono",
+    "localityId": "LOC-780772655"
+  },
+  {
+    "id": "DIS-136283",
+    "label": "PK 18",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-137685",
+    "label": "Niangon EECI Novalim",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-137780",
+    "label": "Cocody Centre",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-137959",
+    "label": "Bromakoté",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-138814",
+    "label": "Banco Sipim",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-139644",
+    "label": "Centre Commercial ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-139680",
+    "label": "Moni",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-140610",
+    "label": "Kennedy 1",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-141377",
+    "label": "Kouté Village ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-141674",
+    "label": "Sagbé Nord",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-141878",
+    "label": "Val Doyen",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-142395",
+    "label": "Lycée Technique ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-143903",
+    "label": "Késsé",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-144204",
+    "label": "Adeimin",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-144270",
+    "label": "Prodomo",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-144438",
+    "label": "Akroma-Yaki",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-145970",
+    "label": "Kouté",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-146165",
+    "label": "Sagbé",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-147603",
+    "label": "Cité Hévéa ",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-147948",
+    "label": "100 Logement",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-148208",
+    "label": "Tamini",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-149523",
+    "label": "Porbouet",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-150058",
+    "label": "9ème tranche",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-150676",
+    "label": "Andokoi",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-150837",
+    "label": "Adjamé Nord-Est",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-151934",
+    "label": "Riviera 5",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-151979",
+    "label": "Nouveau quartier ",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-152083",
+    "label": "Niangon Lokoua",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-152202",
+    "label": "Yopougon Santé",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-152815",
+    "label": "CHU de Cocody",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-152942",
+    "label": "Plateau Dokui",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-153502",
+    "label": "Anyama",
+    "localityId": "LOC-151450236"
+  },
+  {
+    "id": "DIS-157194",
+    "label": "Orly 2",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-157591",
+    "label": "Nouveau goudron",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-157863",
+    "label": "4 étages",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-158173",
+    "label": "Soleil 1",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-159238",
+    "label": "Impérial ",
+    "localityId": "LOC-167694429"
+  },
+  {
+    "id": "DIS-161190",
+    "label": "Cité des arts",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-161298",
+    "label": "Agnikro",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-161731",
+    "label": "220 lgts",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-162330",
+    "label": "Jean Baptiste Mockey",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-162447",
+    "label": "Treichville",
+    "localityId": "LOC-142"
+  },
+  {
+    "id": "DIS-162700",
+    "label": "Divo",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-163045",
+    "label": "Saint Michel",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-163897",
+    "label": "Fakala",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-164160",
+    "label": "Sapa",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-165087",
+    "label": "Institut Pastoral ",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-165601",
+    "label": "Cité Universitaire Abobo II",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-166581",
+    "label": "Aliodan",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-166780",
+    "label": "Évêché ",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-167288",
+    "label": "Biabou",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-167591",
+    "label": "Quartier Thérèse ",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-168277",
+    "label": "Agbekoi",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-168693",
+    "label": "N'zuessy",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-169492",
+    "label": "Sodeci - Filtisac",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-169525",
+    "label": "Palmeraie ",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-170210",
+    "label": "Niangon Nord Sicogi",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-170580",
+    "label": "Gbokora",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-171582",
+    "label": "M'badon",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-172764",
+    "label": "220 Logements",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-172835",
+    "label": "M'Pouto",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-172995",
+    "label": "Aboua",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-173908",
+    "label": "Dimbokro",
+    "localityId": "LOC-197024859"
+  },
+  {
+    "id": "DIS-173944",
+    "label": "Sogephia Siporex",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-174037",
+    "label": "Quartier Recasement",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-175385",
+    "label": "Boundiali",
+    "localityId": "LOC-154256266"
+  },
+  {
+    "id": "DIS-175471",
+    "label": "Balouzon",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-176109",
+    "label": "Us-aid",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-176194",
+    "label": "Palmeraie Génie 2000",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-176232",
+    "label": "Cité Candy",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-178347",
+    "label": "Danga",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-178626",
+    "label": "Tazibouo 2",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-178645",
+    "label": "Centre Pilote ",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-178920",
+    "label": "Résidentiel 2",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-179511",
+    "label": "Sofaica",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-180104",
+    "label": "Aman",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-184108",
+    "label": "Gagnoa",
+    "localityId": "LOC-104637076"
+  },
+  {
+    "id": "DIS-184224",
+    "label": "Bonon ",
+    "localityId": "LOC-113806631"
+  },
+  {
+    "id": "DIS-184522",
+    "label": "Abatta",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-184920",
+    "label": "Hibiscus ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-185164",
+    "label": "Tchotchoraf",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-186044",
+    "label": "Dioulabougou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-189132",
+    "label": "Djékanou ",
+    "localityId": "LOC-166306634"
+  },
+  {
+    "id": "DIS-189142",
+    "label": "Gare Sud Sodeci GFCI",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-189502",
+    "label": "Abia-Abety",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-189563",
+    "label": "Nord Est",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-189674",
+    "label": "École de gendarmerie ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-190539",
+    "label": "Forum",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-190574",
+    "label": "Yopougon Attié",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-191081",
+    "label": "Sagbé Sud",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-191256",
+    "label": "Abattoir 2",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-191920",
+    "label": "Champroux ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-195446",
+    "label": "Bouaké",
+    "localityId": "LOC-108830515"
+  },
+  {
+    "id": "DIS-195530",
+    "label": "Carrière ",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-196016",
+    "label": "Mairie II",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-199323",
+    "label": "Remblais ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-200505",
+    "label": "Village Ebrié",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-200509",
+    "label": "Abobo RTI",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-200629",
+    "label": "Baoulé",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-200914",
+    "label": "Bia Sud",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-201000",
+    "label": "Songon",
+    "localityId": "LOC-889"
+  },
+  {
+    "id": "DIS-201128",
+    "label": "Niangon Adjamé ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-202027",
+    "label": "Résidentiel ",
+    "localityId": "LOC-167596887"
+  },
+  {
+    "id": "DIS-204874",
+    "label": "Morofe",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-205749",
+    "label": "Grand-Lahou",
+    "localityId": "LOC-319786055"
+  },
+  {
+    "id": "DIS-207601",
+    "label": "Cacaotou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-207731",
+    "label": "Résidentiel ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-207973",
+    "label": "Soleil 2",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-208672",
+    "label": "Abobo Sud",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-208699",
+    "label": "Commerce",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-209450",
+    "label": "Bracodi",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-209859",
+    "label": "EECI",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-209867",
+    "label": "Université ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-210724",
+    "label": "Gendarmerie Agban",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-212280",
+    "label": "Djorogobité",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-212460",
+    "label": "Mirador ",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-212669",
+    "label": "Koudougou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-213617",
+    "label": "Avocatier",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-214335",
+    "label": "Chantier",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-214499",
+    "label": "Plateau",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-217243",
+    "label": "Plateau",
+    "localityId": "LOC-127"
+  },
+  {
+    "id": "DIS-224696",
+    "label": "Cité de la Celle",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-233296",
+    "label": "Banco",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-233554",
+    "label": "Niangon Lokoa",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-239320",
+    "label": "Azito",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-251022",
+    "label": "Texaco",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-254819",
+    "label": "Maroc ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-260895",
+    "label": "Williamsville III",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-263615",
+    "label": "Agouti",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-264013",
+    "label": "Toits Rouges",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-264596",
+    "label": "Riviera Palmeraie",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-272404",
+    "label": "Dehita",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-273490",
+    "label": "Cité Marina",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-278398",
+    "label": "Tazibouo 1",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-288834",
+    "label": "Zoukougbeu ",
+    "localityId": "LOC-207408544"
+  },
+  {
+    "id": "DIS-295259",
+    "label": "Kouadjo Kouakou",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-301645",
+    "label": "Remblais ",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-307353",
+    "label": "Adjamé Bingerville",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-315361",
+    "label": "Abattoir 1",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-328160",
+    "label": "Palmafrique - V2",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-336907",
+    "label": "Gesco",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-337772",
+    "label": "Sicogi",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-359801",
+    "label": "Habitat extension ",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-372768",
+    "label": "Faya",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-387838",
+    "label": "Bellou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-394918",
+    "label": "Bonoua",
+    "localityId": "LOC-597927915"
+  },
+  {
+    "id": "DIS-396270",
+    "label": "Cafop-Sodepalm",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-404360",
+    "label": "Cité Palma",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-421036",
+    "label": "HKB",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-423102",
+    "label": "Côte d'Azur Golf 1",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-425936",
+    "label": "Abattoir 1",
+    "localityId": "LOC-159693753"
+  },
+  {
+    "id": "DIS-426057",
+    "label": "Vavoua",
+    "localityId": "LOC-128862105"
+  },
+  {
+    "id": "DIS-426683",
+    "label": "Korhogo",
+    "localityId": "LOC-145422874"
+  },
+  {
+    "id": "DIS-440066",
+    "label": "Cité Ado",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-450494",
+    "label": "Quartier Millionnaire",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-452401",
+    "label": "Riviera 3",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-456183",
+    "label": "Niangon Attié",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-456793",
+    "label": "Wrod",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-457180",
+    "label": "Mamie Adjoua",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-465835",
+    "label": "Yamoussoukro ",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-466323",
+    "label": "Orly 1",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-466773",
+    "label": "Mairie I",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-472728",
+    "label": "Gbagba",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-482415",
+    "label": "Zone 4",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-491571",
+    "label": "Adjouffou",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-492170",
+    "label": "Boussaké",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-497263",
+    "label": "Kokrenou",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-523014",
+    "label": "Académie des mers",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-536326",
+    "label": "Attogban",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-544090",
+    "label": "EECI Riviera ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-545218",
+    "label": "Grand-Lahou",
+    "localityId": "LOC-319786055"
+  },
+  {
+    "id": "DIS-558214",
+    "label": "Akouedo ",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-563145",
+    "label": "Allabra Sogephia",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-581110",
+    "label": "Port-Bouët Centre",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-596105",
+    "label": "Dallas",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-596293",
+    "label": "Millionnaire",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-601525",
+    "label": "Ananeraie ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-612004",
+    "label": "Pallier",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-612057",
+    "label": "Riviera 4",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-614405",
+    "label": "Mermet-ville",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-616375",
+    "label": "Marie Thérèse ",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-622873",
+    "label": "147 Logements ",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-626876",
+    "label": "Cité des cadres",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-629416",
+    "label": "Ancien Dabou",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-637602",
+    "label": "Yapi",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-640674",
+    "label": "CEDEAO",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-641193",
+    "label": "Aghanou",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-649707",
+    "label": "Quartier Ahoussi",
+    "localityId": "LOC-167694429"
+  },
+  {
+    "id": "DIS-651827",
+    "label": "Cité Benet",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-661818",
+    "label": "Belleville",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-663732",
+    "label": "Zone industrielle ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-664547",
+    "label": "Niangon Sud à gauche ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-669201",
+    "label": "Blockauss",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-683096",
+    "label": "Daloa",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-683146",
+    "label": "Côte d'Azur Golf 2",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-691615",
+    "label": "Niangon Sud à droite ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-693193",
+    "label": "Treichville",
+    "localityId": "LOC-142"
+  },
+  {
+    "id": "DIS-701428",
+    "label": "Williamsville II",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-705387",
+    "label": "Atsin",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-706032",
+    "label": "Koblata",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-706193",
+    "label": "Jean Folly",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-739352",
+    "label": "Biétry",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-752054",
+    "label": "Sogephia Riviera 2",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-755570",
+    "label": "Akeikoi",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-758361",
+    "label": "7ème tranche",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-763733",
+    "label": "II Plateaux",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-775965",
+    "label": "Anador",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-783085",
+    "label": "Etoile",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-784078",
+    "label": "Riviera 3",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-813893",
+    "label": "SOS Abobo",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-820833",
+    "label": "Kablan Brou Félix",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-829628",
+    "label": "N'Dotré",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-831719",
+    "label": "Beago",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-831789",
+    "label": "Cobakro",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-843849",
+    "label": "Camp militaire ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-845594",
+    "label": "Divo",
+    "localityId": "LOC-100884539"
+  },
+  {
+    "id": "DIS-847501",
+    "label": "Faya",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-855551",
+    "label": "Campement ",
+    "localityId": "LOC-133"
+  },
+  {
+    "id": "DIS-860958",
+    "label": "Dioulakro",
+    "localityId": "LOC-841558831"
+  },
+  {
+    "id": "DIS-864771",
+    "label": "Gnanzoua",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-865368",
+    "label": "Cité Ade Mensa",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-866916",
+    "label": "Quartier Dioula",
+    "localityId": "LOC-158950788"
+  },
+  {
+    "id": "DIS-867036",
+    "label": "Konan Raphael ",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-870458",
+    "label": "Abobo Baoulé",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-875268",
+    "label": "Duekoué",
+    "localityId": "LOC-530249327"
+  },
+  {
+    "id": "DIS-876388",
+    "label": "Résidentiel 1",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-882344",
+    "label": "Guiglo",
+    "localityId": "LOC-529222200"
+  },
+  {
+    "id": "DIS-884942",
+    "label": "Niangon Nord ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-898162",
+    "label": "Soubré ",
+    "localityId": "LOC-167596887"
+  },
+  {
+    "id": "DIS-901509",
+    "label": "Résidentiel S",
+    "localityId": "LOC-512777955"
+  },
+  {
+    "id": "DIS-908533",
+    "label": "Dokoui Olympe (Vidange)",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-913191",
+    "label": "Vridi",
+    "localityId": "LOC-266"
+  },
+  {
+    "id": "DIS-915615",
+    "label": "Cité Universitaire Abobo I",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-917836",
+    "label": "Marie Koré",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-922897",
+    "label": "Adama",
+    "localityId": "LOC-169"
+  },
+  {
+    "id": "DIS-928768",
+    "label": "Agbanou",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-929879",
+    "label": "Adiopodoumé",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-940009",
+    "label": "Kennedy 2",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-942806",
+    "label": "L'Habitat",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-948464",
+    "label": "Kpassi-Affre",
+    "localityId": "LOC-374299937"
+  },
+  {
+    "id": "DIS-958227",
+    "label": "Broukoua",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-962080",
+    "label": "Niangon Lokoua",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-970901",
+    "label": "Cité de la Grâce",
+    "localityId": "LOC-405"
+  },
+  {
+    "id": "DIS-974410",
+    "label": "Niangon Sud ",
+    "localityId": "LOC-146"
+  },
+  {
+    "id": "DIS-974493",
+    "label": "ENA",
+    "localityId": "LOC-156"
+  },
+  {
+    "id": "DIS-976733",
+    "label": "Tazibouo 3",
+    "localityId": "LOC-208733297"
+  },
+  {
+    "id": "DIS-985804",
+    "label": "Indénié",
+    "localityId": "LOC-983"
+  },
+  {
+    "id": "DIS-992356",
+    "label": "PTT",
+    "localityId": "LOC-773"
+  },
+  {
+    "id": "DIS-997628",
+    "label": "Selmer ",
+    "localityId": "LOC-146"
+  }
+]

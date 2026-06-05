@@ -1,0 +1,106 @@
+[
+  {
+    "id": 1,
+    "callingCode": "+225",
+    "code": "CIV",
+    "enabled": 1,
+    "label": "Côte d'ivoire",
+    "phoneNumberLength": 10
+  },
+  {
+    "id": 2,
+    "callingCode": "+223",
+    "code": "MLI",
+    "enabled": 1,
+    "label": "Mali",
+    "phoneNumberLength": 8
+  },
+  {
+    "id": 3,
+    "callingCode": "+221",
+    "code": "SEN",
+    "enabled": 1,
+    "label": "Sénégal",
+    "phoneNumberLength": 9
+  },
+  {
+    "id": 4,
+    "callingCode": "+237",
+    "code": "CAM",
+    "enabled": 1,
+    "label": "Cameroun ",
+    "phoneNumberLength": 9
+  },
+  {
+    "id": 5,
+    "callingCode": "+229",
+    "code": "BEN",
+    "enabled": 1,
+    "label": "Bénin ",
+    "phoneNumberLength": 8
+  },
+  {
+    "id": 6,
+    "callingCode": "+212",
+    "code": "MAR",
+    "enabled": 1,
+    "label": "Maroc",
+    "phoneNumberLength": 10
+  },
+  {
+    "id": 7,
+    "callingCode": "+33",
+    "code": "FRA",
+    "enabled": 1,
+    "label": "France ",
+    "phoneNumberLength": 10
+  },
+  {
+    "id": 8,
+    "callingCode": "+39",
+    "code": "ITL",
+    "enabled": 1,
+    "label": "Italie",
+    "phoneNumberLength": 10
+  },
+  {
+    "id": 9,
+    "callingCode": "+226",
+    "code": "BFA",
+    "enabled": 1,
+    "label": "Burkina Faso",
+    "phoneNumberLength": 8
+  },
+  {
+    "id": 10,
+    "callingCode": "+1",
+    "code": "USA",
+    "enabled": 1,
+    "label": "États-Unis d'Amérique ",
+    "phoneNumberLength": 10
+  },
+  {
+    "id": 11,
+    "callingCode": "+243",
+    "code": "COG",
+    "enabled": 1,
+    "label": "Congo",
+    "phoneNumberLength": 9
+  },
+  {
+    "id": 12,
+    "callingCode": "+228",
+    "code": "TGO",
+    "enabled": 1,
+    "label": "Togo",
+    "phoneNumberLength": 8
+  },
+  {
+    "id": 13,
+    "callingCode": "+216",
+    "code": "TUN",
+    "enabled": 1,
+    "label": "Tunisie",
+    "phoneNumberLength": 10
+  }
+]

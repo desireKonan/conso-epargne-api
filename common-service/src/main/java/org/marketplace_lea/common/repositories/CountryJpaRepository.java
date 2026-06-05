@@ -14,4 +14,7 @@ public interface CountryJpaRepository extends JpaRepository<CountryV2Entity, Lon
 
     @Query("SELECT c FROM Country c where c.enabled =:enabled")
     List<CountryV2Entity> getCountries(@Param("enabled") boolean enabled);
+
+    @Query("SELECT COUNT(c) FROM Country c")
+    long countCountries();
 }

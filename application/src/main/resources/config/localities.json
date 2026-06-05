@@ -1,0 +1,197 @@
+[
+  {
+    "id": "LOC-100884539",
+    "fees": 300.0,
+    "label": "Divo"
+  },
+  {
+    "id": "LOC-104637076",
+    "fees": 500.0,
+    "label": "Gagnoa"
+  },
+  {
+    "id": "LOC-105396062",
+    "fees": 500.0,
+    "label": "San Pedro "
+  },
+  {
+    "id": "LOC-108830515",
+    "fees": 500.0,
+    "label": "Bouaké"
+  },
+  {
+    "id": "LOC-113806631",
+    "fees": 200.0,
+    "label": "Bonon"
+  },
+  {
+    "id": "LOC-127",
+    "fees": 1000.0,
+    "label": "Plateau"
+  },
+  {
+    "id": "LOC-128862105",
+    "fees": 0.0,
+    "label": "Vavoua"
+  },
+  {
+    "id": "LOC-133",
+    "fees": 1000.0,
+    "label": "Koumassi"
+  },
+  {
+    "id": "LOC-142",
+    "fees": 1000.0,
+    "label": "Treichville "
+  },
+  {
+    "id": "LOC-145422874",
+    "fees": 500.0,
+    "label": "Korhogo"
+  },
+  {
+    "id": "LOC-146",
+    "fees": 1000.0,
+    "label": "Yopougon"
+  },
+  {
+    "id": "LOC-151450236",
+    "fees": 1000.0,
+    "label": "Anyama"
+  },
+  {
+    "id": "LOC-154256266",
+    "fees": 0.0,
+    "label": "Boundiali"
+  },
+  {
+    "id": "LOC-156",
+    "fees": 0.0,
+    "label": "Cocody"
+  },
+  {
+    "id": "LOC-158950788",
+    "fees": 0.0,
+    "label": "Gonaté"
+  },
+  {
+    "id": "LOC-159693753",
+    "fees": 500.0,
+    "label": "Abengourou"
+  },
+  {
+    "id": "LOC-166306634",
+    "fees": 500.0,
+    "label": "Djékanou "
+  },
+  {
+    "id": "LOC-167596887",
+    "fees": 500.0,
+    "label": "Soubré "
+  },
+  {
+    "id": "LOC-167694429",
+    "fees": 500.0,
+    "label": "Grand-Bassam"
+  },
+  {
+    "id": "LOC-169",
+    "fees": 1000.0,
+    "label": "Bingerville"
+  },
+  {
+    "id": "LOC-197024859",
+    "fees": 500.0,
+    "label": "Dimbokro"
+  },
+  {
+    "id": "LOC-201",
+    "fees": 1000.0,
+    "label": "Attécoubé"
+  },
+  {
+    "id": "LOC-207408544",
+    "fees": 300.0,
+    "label": "Zoukougbeu "
+  },
+  {
+    "id": "LOC-208733297",
+    "fees": 0.0,
+    "label": "Daloa"
+  },
+  {
+    "id": "LOC-266",
+    "fees": 1000.0,
+    "label": "Port-bouet"
+  },
+  {
+    "id": "LOC-287302700",
+    "fees": 500.0,
+    "label": "Toumodi"
+  },
+  {
+    "id": "LOC-319786055",
+    "fees": 250.0,
+    "label": "Grand-Lahou"
+  },
+  {
+    "id": "LOC-374299937",
+    "fees": 0.0,
+    "label": "Dabou"
+  },
+  {
+    "id": "LOC-405",
+    "fees": 1000.0,
+    "label": "Abobo"
+  },
+  {
+    "id": "LOC-512777955",
+    "fees": 0.0,
+    "label": "Bouafflé "
+  },
+  {
+    "id": "LOC-529222200",
+    "fees": 300.0,
+    "label": "Guiglo"
+  },
+  {
+    "id": "LOC-530249327",
+    "fees": 300.0,
+    "label": "Duekoué"
+  },
+  {
+    "id": "LOC-579202112",
+    "fees": 300.0,
+    "label": "Agboville"
+  },
+  {
+    "id": "LOC-597927915",
+    "fees": 500.0,
+    "label": "Bonoua"
+  },
+  {
+    "id": "LOC-773",
+    "fees": 1000.0,
+    "label": "Marcory"
+  },
+  {
+    "id": "LOC-780772655",
+    "fees": 500.0,
+    "label": "Mankono"
+  },
+  {
+    "id": "LOC-841558831",
+    "fees": 500.0,
+    "label": "Yamoussoukro "
+  },
+  {
+    "id": "LOC-889",
+    "fees": 1000.0,
+    "label": "Songon"
+  },
+  {
+    "id": "LOC-983",
+    "fees": 0.0,
+    "label": "Adjamé"
+  }
+]
