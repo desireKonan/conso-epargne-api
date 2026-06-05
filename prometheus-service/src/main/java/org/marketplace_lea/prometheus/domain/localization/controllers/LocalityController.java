@@ -44,7 +44,8 @@ public class LocalityController {
 
     @PostMapping
     public ResponseEntity<LocalityDto> create(@Valid @RequestBody LocalityCreateForm form) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(localityService.create(form));
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(localityService.create(form));
     }
 
     @PutMapping("/{id}")
