@@ -9,6 +9,7 @@ import org.marketplace_lea.prometheus.domain.parameter_config.form.ParameterConf
 import org.marketplace_lea.prometheus.domain.parameter_config.form.ParameterConfigSearchCriteria;
 import org.marketplace_lea.prometheus.domain.parameter_config.form.ParameterConfigUpdateForm;
 import org.marketplace_lea.prometheus.domain.parameter_config.mapper.ParameterConfigMapper;
+import org.marketplace_lea.prometheus.domain.parameter_config.services.ParameterConfigService;
 import org.marketplace_lea.prometheus.domain.parameter_config.services.specifications.ParameterConfigSpecifications;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

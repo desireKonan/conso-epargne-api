@@ -16,13 +16,11 @@ public class ParameterConfigSpecifications {
             List<Predicate> predicates = new ArrayList<>();
 
             if (StringUtils.hasText(criteria.getKey())) {
-                predicates.add(cb.like(cb.lower(root.get("key")),
-                        "%" + criteria.getKey().toLowerCase() + "%"));
+                predicates.add(cb.like(cb.lower(root.get("key")), "%" + criteria.getKey().toLowerCase() + "%"));
             }
 
             if (StringUtils.hasText(criteria.getValue())) {
-                predicates.add(cb.like(cb.lower(root.get("value")),
-                        "%" + criteria.getValue().toLowerCase() + "%"));
+                predicates.add(cb.like(cb.lower(root.get("value")), "%" + criteria.getValue().toLowerCase() + "%"));
             }
 
             if (StringUtils.hasText(criteria.getDataType())) {
