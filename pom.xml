@@ -27,6 +27,7 @@
 		<module>application</module>
 		<module>common-service</module>
 		<module>prometheus-service</module>
+		<module>order-service</module>
 	</modules>
 
 	<scm>

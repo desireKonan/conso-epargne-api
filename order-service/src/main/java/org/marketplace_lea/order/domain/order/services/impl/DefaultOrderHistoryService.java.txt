@@ -1,0 +1,29 @@
+package org.marketplace_lea.order.domain.order.services.impl;
+
+import com.conso_epargne.common_service.entities.order.OrderStatusHistory;
+import com.conso_epargne.common_service.entities.v2.order.OrderV2Entity;
+import com.conso_epargne.common_service.repositories.OrderStatusHistoryRepository;
+import org.marketplace_lea.order.domain.order.services.OrderHistoryService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class DefaultOrderHistoryService implements OrderHistoryService {
+
+    private final OrderStatusHistoryRepository historyRepository;
+
+    @Override
+    public OrderStatusHistory create(OrderV2Entity order) {
+        log.info("[DefaultOrderHistoryService.create] Creating order history for order: {}", order.getId());
+
+        OrderStatusHistory orderStatusHistory = new OrderStatusHistory();
+        //orderStatusHistory.setOrder(order);
+
+        var orderHistory = historyRepository.save(orderStatusHistory);
+        log.info("[DefaultOrderHistoryService.create] Order history created: {}", orderHistory.getId());
+        return orderHistory;
+    }
+}

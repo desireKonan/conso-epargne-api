@@ -1,0 +1,19 @@
+package org.marketplace_lea.order.domain.order.services;
+
+
+import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
+
+/**
+ * Service for handling order history.
+ * Based on OrderHistoryService from common-service, adapted for v2 entities.
+ */
+public interface OrderHistoryService {
+    
+    /**
+     * Creates an order history entry for the given order.
+     * 
+     * @param order The order entity
+     * @return The created order history
+     */
+    com.conso_epargne.common_service.entities.order.OrderStatusHistory create(OrderV2Entity order);
+}
