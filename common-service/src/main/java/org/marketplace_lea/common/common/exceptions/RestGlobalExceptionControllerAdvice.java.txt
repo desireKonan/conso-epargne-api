@@ -40,7 +40,7 @@ import static org.springframework.http.HttpStatus.*;
  */
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+public class RestGlobalExceptionControllerAdvice extends ResponseEntityExceptionHandler {
     /**
      * Encodage par défaut des messages json
      */
