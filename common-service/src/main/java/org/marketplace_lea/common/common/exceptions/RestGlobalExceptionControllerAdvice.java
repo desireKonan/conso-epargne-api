@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestControllerAdvice
 public class RestGlobalExceptionControllerAdvice extends ResponseEntityExceptionHandler {
-
     // ==================== CONSTANTES ====================
     private static final String DEFAULT_ERROR_MESSAGE = "Une erreur s'est produite lors du traitement de la requête";
     private static final String VALIDATION_ERROR_TYPE = "https://api.consoepargne.com/errors/validation";
@@ -48,7 +47,6 @@ public class RestGlobalExceptionControllerAdvice extends ResponseEntityException
     private static final String EXTERNAL_SERVICE_ERROR_TYPE = "https://api.consoepargne.com/errors/external-service";
 
     // ==================== EXCEPTIONS MÉTIER ====================
-
     @ExceptionHandler(NoResultException.class)
     public ProblemDetail handleNoResultException(NoResultException ex) {
         log.warn("Aucun résultat trouvé: {}", ex.getMessage());
@@ -261,7 +259,6 @@ public class RestGlobalExceptionControllerAdvice extends ResponseEntityException
     }
 
     // ==================== EXCEPTIONS STOCKAGE ====================
-
     @ExceptionHandler(FileTypeException.class)
     public ProblemDetail handleFileTypeException(FileTypeException ex) {
         log.warn("Type de fichier non supporté: {}", ex.getMessage());
@@ -287,12 +284,13 @@ public class RestGlobalExceptionControllerAdvice extends ResponseEntityException
     }
 
     // ==================== EXCEPTIONS DE VALIDATION ====================
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ProblemDetail handleConstraintViolationException(ConstraintViolationException ex) {
-        String violations = ex.getConstraintViolations().stream()
+        String violations = ex.getConstraintViolations()
+                .stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(", "));
+
         log.debug("Violation de contrainte: {}", violations);
 
         ProblemDetail problemDetail = createProblemDetail(
