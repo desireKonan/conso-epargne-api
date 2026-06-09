@@ -36,6 +36,8 @@ public class RegistrationV2Form implements Serializable {
     @NotBlank(message = "Veuillez entrer votre addresse !")
     private String address;
 
+    private String districtId;
+
     private String token;
 
     @Max(value = 90)

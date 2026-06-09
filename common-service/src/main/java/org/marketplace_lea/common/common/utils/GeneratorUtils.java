@@ -7,13 +7,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 public final class GeneratorUtils {
-    public static String generateRandomString(int taille) {
-        UUID idOne = UUID.randomUUID();
-        String str = idOne.toString();
-        if (taille > 16) {
+    public static String generateRandomString(int length) {
+        String str = UUID.randomUUID().toString();
+        if (length > 16) {
             return str;
         } else {
-            return str.substring(0, taille);
+            return str.substring(0, length);
         }
     }
 
@@ -48,8 +47,8 @@ public final class GeneratorUtils {
     }
 
     private static String generate(int taille) {
-        UUID idOne = UUID.randomUUID();
-        String str = "%s" + idOne;
+        UUID randomUUID = UUID.randomUUID();
+        String str = "%s" + randomUUID;
         int uid = str.hashCode();
         String filterStr = "" + uid;
         str = filterStr.replaceAll("-", "");
@@ -64,7 +63,7 @@ public final class GeneratorUtils {
     }
 
     public static String generateOrderId() {
-        return String.format("ORD-%s", generate(6));
+        return String.format("CONSO-ORD-%s", generate(6));
     }
 
     public static String generateLocalityId() {

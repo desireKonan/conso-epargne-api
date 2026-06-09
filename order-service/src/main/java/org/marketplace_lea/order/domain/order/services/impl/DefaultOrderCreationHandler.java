@@ -1,11 +1,17 @@
 package org.marketplace_lea.order.domain.order.services.impl;
 
+import org.marketplace_lea.common.common.exceptions.ConsoEpargneException;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataException;
+import org.marketplace_lea.common.common.utils.GeneratorUtils;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.repositories.customer.CustomerV2JpaRepository;
+import org.marketplace_lea.order.common.entities.inventory.ProductV2Entity;
+import org.marketplace_lea.order.common.entities.order.CartItemV2Entity;
 import org.marketplace_lea.order.common.entities.order.OrderStatus;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
+import org.marketplace_lea.order.common.repository.order.CartItemV2JpaRepository;
 import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
+import org.marketplace_lea.order.common.repository.order.VoucherV2JpaRepository;
 import org.marketplace_lea.order.domain.order.dto.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
 import org.marketplace_lea.order.domain.order.events.OrderV2EventPublisher;
@@ -13,10 +19,12 @@ import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
 import org.marketplace_lea.order.domain.order.services.OrderCreationHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -37,6 +45,8 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
     private final OrderV2JpaRepository orderRepository;
     private final CustomerV2JpaRepository customerRepository;
     private final OrderV2Mapper orderV2Mapper;
+    private final CartItemV2JpaRepository cartItemV2JpaRepository;
+    private final VoucherV2JpaRepository voucherV2JpaRepository;
     private final OrderV2EventPublisher eventPublisher;
 
     @Override
@@ -48,27 +58,16 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
         CustomerV2Entity customer = customerRepository.findById(createDTO.customerId())
                 .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Client introuvable: " + createDTO.customerId()));
 
-        // Step 2: Validate cart is not empty
-        // TODO: Implement cart validation when CustomerV2Service is available
-        // if (customer.isEmptyCart()) {
-        //     throw new EmptyCartException();
-        // }
-        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Cart validation skipped (TODO)");
+        // Step 2: Validation de la commande.
+        validateCartOrder(customer.getId());
 
-        // Step 3: Validate no sold out products in cart
-        // TODO: Implement sold out product validation when CustomerV2Service is available
-        // if (customer.hasSoldOutProductInCart()) {
-        //     throw new SoldOutProductInCartException();
-        // }
-        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Sold out product validation skipped (TODO)");
-
-        // Step 4: Get payment method
+        // Step 3: Get payment method
         // TODO: Implement payment method handling when PaymentMethodService is available
         log.info("[DefaultOrderCreationHandler.handleOrderCreation] Payment method handling skipped (TODO)");
 
         // Step 5: Build order
         OrderV2Entity order = orderV2Mapper.toEntity(createDTO);
-        order.setId(UUID.randomUUID().toString());
+        order.setId(GeneratorUtils.generateOrderId());
         order.setCustomer(customer);
         order.setStatus(OrderStatus.PENDING);
         order.setCreatedAt(LocalDateTime.now());
@@ -76,6 +75,8 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
         // Step 6: Handle voucher if provided
         if (createDTO.voucherId() != null && !createDTO.voucherId().isBlank()) {
             log.info("[DefaultOrderCreationHandler.handleOrderCreation] Voucher handled in PaymentDetailService");
+            var voucherFound = voucherV2JpaRepository.getValidVoucherByCustomerId(customer.getId());
+            voucherFound.ifPresent(order::setVoucher);
         }
 
         // Step 7: Save order
@@ -100,10 +101,34 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
 
         // Step 10: Delete customer cart
         // TODO: Implement cart deletion when CustomerV2Service is available
-        // customerV2Service.deleteCustomerCart(customer);
+        cartItemV2JpaRepository.deleteByCustomerId(customer.getId());
         log.info("[DefaultOrderCreationHandler.handleOrderCreation] Cart deletion skipped (TODO)");
 
         log.info("[DefaultOrderCreationHandler.handleOrderCreation] Order creation completed for customer: {}", createDTO.customerId());
         return orderV2Mapper.toDTO(savedOrder);
+    }
+
+
+    private void validateCartOrder(String customerId) {
+        // Step 2: Validate cart is not empty
+        // TODO: Implement cart validation when CustomerV2Service is available
+        List<CartItemV2Entity> carts = cartItemV2JpaRepository.getAllByCustomerId(customerId);
+        if (carts.isEmpty()) {
+            throw new ConsoEpargneNotFoundDataException("Le chariot de commande est vide ! Veuillez ajouter des elements avant de faire une commande !");
+        }
+        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Cart validation skipped (TODO)");
+
+        // Step 3: Validate no sold out products in cart
+        // TODO: Implement sold out product validation when CustomerV2Service is available
+        List<String> cartItemsWithSoldoutProduct = carts.stream()
+                .filter(cartItemV2Entity -> cartItemV2Entity.getProduct().isSoldOut())
+                .map(CartItemV2Entity::getProduct)
+                .map(ProductV2Entity::getLabel)
+                .toList();
+        if (!cartItemsWithSoldoutProduct.isEmpty()) {
+            String productNames = String.join(",", cartItemsWithSoldoutProduct);
+            throw new ConsoEpargneException("Les produits " + productNames + " sont en rupture de stocks !", HttpStatus.BAD_REQUEST);
+        }
+        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Sold out product validation skipped (TODO)");
     }
 }

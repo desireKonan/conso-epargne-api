@@ -13,6 +13,7 @@ import jakarta.persistence.Transient;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import org.marketplace_lea.common.common.utils.GeneratorUtils;
+import org.marketplace_lea.common.entities.DistrictEntity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -44,6 +45,10 @@ public class CustomerV2Entity {
     @JoinColumn(name = "account_id", nullable = false)
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     private AccountV2Entity account;
+
+    @OneToOne
+    @JoinColumn(name = "district_id")
+    private DistrictEntity district;
 
     @Column(name = "firstname", nullable = false)
     private String firstName;

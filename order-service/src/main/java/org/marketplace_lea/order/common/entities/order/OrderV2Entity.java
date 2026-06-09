@@ -29,7 +29,9 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.marketplace_lea.order.common.entities.order.OrderStatus.*;
+import static org.marketplace_lea.order.common.entities.order.OrderStatus.CANCELED;
+import static org.marketplace_lea.order.common.entities.order.OrderStatus.PENDING;
+import static org.marketplace_lea.order.common.entities.order.OrderStatus.VALIDATED;
 
 @Getter
 @Setter

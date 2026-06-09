@@ -8,6 +8,7 @@ import org.marketplace_lea.common.entities.account.AccountSponsorshipEntity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Type;
+import org.marketplace_lea.common.repositories.DistrictJpaRepository;
 import org.marketplace_lea.prometheus.common.dto.RegistrationV2Form;
 import org.marketplace_lea.prometheus.domain.onboarding.forms.CustomerV2Mapper;
 import org.marketplace_lea.common.repositories.CountryJpaRepository;
@@ -51,6 +52,7 @@ public class DefaultCustomerOnboardingService implements CustomerOnboardingServi
     private final AccountV2JpaRepository accountV2JpaRepository;
     private final AccountTypeV2JpaRepository accountTypeV2JpaRepository;
     private final AccountSponsorshipJpaRepository accountSponsorshipJpaRepository;
+    private final DistrictJpaRepository districtJpaRepository;
     private final CountryJpaRepository countryRepository;
     private final CustomerV2Mapper customerV2Mapper;
     private final WalletV2Service walletService;
@@ -94,7 +96,9 @@ public class DefaultCustomerOnboardingService implements CustomerOnboardingServi
         Optional<AccountV2Entity> parentFound = findParentOrThrow(form.getParentCode());
 
         // 3. Construction des entités
-        CustomerV2Entity customer = buildCustomerFromForm(form);
+        boolean isCountryBased = "enabled".equalsIgnoreCase(countryBasedAuthentication);
+
+        CustomerV2Entity customer = buildCustomerFromForm(form, isCountryBased);
 
         // 4. Blockage automatique pour les comptes partenaires (à activer après validation admin)
         if (customer.getAccount().bePartner()) {
@@ -159,7 +163,7 @@ public class DefaultCustomerOnboardingService implements CustomerOnboardingServi
 
 
     // ==================== Méthodes privées de construction ====================
-    private CustomerV2Entity buildCustomerFromForm(RegistrationV2Form form) {
+    private CustomerV2Entity buildCustomerFromForm(RegistrationV2Form form, boolean isCountryBased) {
         var entity = customerV2Mapper.toEntity(form);
 
         var accountType = accountTypeV2JpaRepository.findById(form.getAccountTypeId())
@@ -181,14 +185,18 @@ public class DefaultCustomerOnboardingService implements CustomerOnboardingServi
         entity.setLatitude(form.latitude());
         entity.setLongitude(form.longitude());
 
-        String phoneNumber = buildPhoneNumberLabel(form);
+        String phoneNumber = buildPhoneNumberLabel(form, isCountryBased);
+
+        /// Ajout du district.
+        addDistrict(entity, isCountryBased);
+
         entity.setPhoneNumbers(List.of(phoneNumber));
         return entity;
     }
 
 
-    private String buildPhoneNumberLabel(RegistrationV2Form form) {
-        boolean isCountryBased = "enabled".equalsIgnoreCase(countryBasedAuthentication);
+    private String buildPhoneNumberLabel(RegistrationV2Form form, boolean isCountryBased) {
+        //boolean isCountryBased = "enabled".equalsIgnoreCase(countryBasedAuthentication);
         if (!isCountryBased) {
             return form.getLogin();
         }
@@ -198,6 +206,14 @@ public class DefaultCustomerOnboardingService implements CustomerOnboardingServi
                 .orElse("");
 
         return callingCode + form.getLogin();
+    }
+
+
+    private void addDistrict(CustomerV2Entity customerV2Entity, boolean isCountryBased) {
+        var districtFound = districtJpaRepository.findById(customerV2Entity.getDistrict().getId());
+        if (isCountryBased && customerV2Entity.getDistrict() != null && "CIV".equals(customerV2Entity.getAccount().getCountryCode())) {
+            districtFound.ifPresent(customerV2Entity::setDistrict);
+        }
     }
 
 

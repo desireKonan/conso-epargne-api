@@ -51,7 +51,8 @@ public class OrderV2ApiController {
     @PostMapping
     public ResponseEntity<OrderV2DTO> create(@Valid @RequestBody CreateOrderV2Form createDTO) {
         OrderV2DTO created = orderCreationV2Service.create(createDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(created);
     }
 
     @PutMapping("/{id}")

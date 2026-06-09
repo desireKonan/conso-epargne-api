@@ -170,7 +170,8 @@ public class DefaultProductV2Service implements ProductV2Service {
         cartItemV2JpaRepository.deleteByProductId(id);
         ProductV2Entity product = getEntityById(id);
         product.setDeletedAt(LocalDateTime.now());
-        productRepository.save(product);
+        var productDeleted = productRepository.save(product);
+        log.info("[DefaultProductV2Service.deleteById] Product deleted: {}", productDeleted.getId());
     }
 
     @Override

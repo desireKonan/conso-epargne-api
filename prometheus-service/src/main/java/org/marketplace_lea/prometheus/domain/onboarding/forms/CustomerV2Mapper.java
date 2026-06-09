@@ -24,6 +24,7 @@ public interface CustomerV2Mapper {
     @Mapping(source = "login", target = "account.login")
     @Mapping(source = "countryCode", target = "account.countryCode")
     @Mapping(source = "accountTypeId", target = "account.accountType.id")
+    @Mapping(source = "districtId", target = "district.id")
     CustomerV2Entity toEntity(RegistrationV2Form form);
 
     @Mapping(source = "account.accountType.id", target = "account.accountTypeId")

@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.marketplace_lea.common.common.utils.GeneratorUtils;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Getter
@@ -32,6 +33,12 @@ public class DistrictEntity extends BaseEntity {
 
     @Column(name = "label", nullable = false)
     private String label;
+
+    @Column(name = "longitude", columnDefinition = "DECIMAL(10, 8)")
+    private BigDecimal longitude;
+
+    @Column(name = "latitude", columnDefinition = "DECIMAL(10, 8)")
+    private BigDecimal latitude;
 
     @PrePersist
     public void prePersist() {

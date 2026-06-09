@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.marketplace_lea.common.common.utils.GeneratorUtils;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,6 +31,12 @@ public class LocalityEntity extends BaseEntity {
     @ColumnDefault("0")
     @Column(name = "fees")
     private float fees;
+
+    @Column(name = "longitude", columnDefinition = "DECIMAL(10, 8)")
+    private BigDecimal longitude;
+
+    @Column(name = "latitude", columnDefinition = "DECIMAL(10, 8)")
+    private BigDecimal latitude;
 
     @PrePersist
     public void prePersist() {

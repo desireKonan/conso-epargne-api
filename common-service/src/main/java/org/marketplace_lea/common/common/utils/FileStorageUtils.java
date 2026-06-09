@@ -15,10 +15,9 @@ public final class FileStorageUtils {
     }
 
     public static String createNewFileName(String originalFileName) {
-        String fileName = createNewFileName();
         String extension = Optional.ofNullable(FilenameUtils.getExtension(originalFileName))
                 .orElse("");
-        return String.format("%s.%s", fileName, extension);
+        return String.format("%s.%s", originalFileName, extension);
 
     }
 
