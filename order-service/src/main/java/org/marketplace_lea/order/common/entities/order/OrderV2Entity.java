@@ -121,11 +121,10 @@ public class OrderV2Entity {
         createdAt = LocalDateTime.now();
     }
 
-    @Transient
-    public Double getTotalOrderPrice() {
+    public double retrieveTotalOrderPrice() {
         double sum = 0D;
-        for (OrderItemV2Entity oi : getOrderItems()) {
-            sum += oi.total();
+        for (OrderItemV2Entity oi : orderItems) {
+            sum += oi.retrieveTotal();
         }
         return sum;
     }

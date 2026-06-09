@@ -34,4 +34,13 @@ public record CreateOrderV2Form(
     
     @NotBlank(message = "Provider is required")
     String provider
-) {}
+) {
+
+    public double determineLatitude() {
+        return this.latitude != null ? this.latitude.doubleValue() : 0.0;
+    }
+
+    public double determineLongitude() {
+        return this.longitude != null ? this.longitude.doubleValue() : 0.0;
+    }
+}

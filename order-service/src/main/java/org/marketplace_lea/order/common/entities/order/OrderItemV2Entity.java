@@ -5,7 +5,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,8 +30,8 @@ public class OrderItemV2Entity extends ItemV2Entity {
     @JoinColumn(name = "order_id")
     private OrderV2Entity order;
 
-    @Transient
-    public float total() {
+
+    public float retrieveTotal() {
         return Optional.of(product)
                 .map(ProductV2Entity::getPrice)
                 .map(price -> price.floatValue() * getQuantity())
