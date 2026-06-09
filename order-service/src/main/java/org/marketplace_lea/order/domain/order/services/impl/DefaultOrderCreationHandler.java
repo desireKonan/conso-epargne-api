@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Implementation of OrderCreationHandler that orchestrates the complete order creation process.
@@ -79,12 +78,14 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
             voucherFound.ifPresent(order::setVoucher);
         }
 
-        // Step 7: Save order
-        OrderV2Entity savedOrder = orderRepository.save(order);
-        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Order saved with ID: {}", savedOrder.getId());
+        // Step 7: Handle fees.
+
+        // Step 8: Save order
+        OrderV2Entity orderSaved = orderRepository.save(order);
+        log.info("[DefaultOrderCreationHandler.handleOrderCreation] Order saved with ID: {}", orderSaved.getId());
 
 
-        // Step 8: Publish delivery event if payment method is "CUSTOMER"
+        // Step 9: Publish delivery event if payment method is "CUSTOMER"
         if ("CUSTOMER".equals(order.getProvider())) {
 //            var deliveryEvent = new OrderPaidEvent(
 //                    savedOrder,
@@ -105,10 +106,12 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
         log.info("[DefaultOrderCreationHandler.handleOrderCreation] Cart deletion skipped (TODO)");
 
         log.info("[DefaultOrderCreationHandler.handleOrderCreation] Order creation completed for customer: {}", createDTO.customerId());
-        return orderV2Mapper.toDTO(savedOrder);
+        return orderV2Mapper.toDTO(orderSaved);
     }
 
 
+
+    /// Privates Helpers.
     private void validateCartOrder(String customerId) {
         // Step 2: Validate cart is not empty
         // TODO: Implement cart validation when CustomerV2Service is available

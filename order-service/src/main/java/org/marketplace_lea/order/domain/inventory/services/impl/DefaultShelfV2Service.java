@@ -3,7 +3,6 @@ package org.marketplace_lea.order.domain.inventory.services.impl;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataException;
 import org.marketplace_lea.common.common.service.storage.StorageService;
 import org.marketplace_lea.order.common.entities.inventory.ShelfV2Entity;
-import org.marketplace_lea.order.common.repository.inventory.EnsignV2JpaRepository;
 import org.marketplace_lea.order.common.repository.inventory.ShelfV2JpaRepository;
 import org.marketplace_lea.order.domain.inventory.dto.CreateShelfV2Form;
 import org.marketplace_lea.order.domain.inventory.dto.ShelfV2DTO;
@@ -31,7 +30,6 @@ import static org.marketplace_lea.common.common.utils.MediaUtils.getShelfImageKe
 @RequiredArgsConstructor
 public class DefaultShelfV2Service implements ShelfV2Service {
     private final ShelfV2JpaRepository shelfRepository;
-    private final EnsignV2JpaRepository ensignRepository;
     private final StorageService storageService;
     private final ShelfV2Mapper shelfV2Mapper;
 
@@ -78,7 +76,9 @@ public class DefaultShelfV2Service implements ShelfV2Service {
     @Override
     public List<ShelfV2DTO> findShelvesByEnsignId(String ensignId) {
         List<ShelfV2Entity> shelves = shelfRepository.findByEnsignId(ensignId);
-        return shelves.stream().map(shelfV2Mapper::toDTO).toList();
+        return shelves.stream()
+                .map(shelfV2Mapper::toDTO)
+                .toList();
     }
 
     @Override

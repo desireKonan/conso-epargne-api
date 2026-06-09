@@ -19,6 +19,7 @@ import org.marketplace_lea.application.configuration.data_initializer.service.Di
 import org.marketplace_lea.application.configuration.data_initializer.service.LocalityInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.NotificationTemplateInitializer;
 import org.marketplace_lea.application.configuration.data_initializer.service.ParameterInitializer;
+import org.marketplace_lea.application.configuration.data_initializer.service.PaymentMethodInitializer;
 import org.marketplace_lea.common.common.service.storage.StorageService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -38,6 +39,7 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Applic
     private final LocalityInitializer localityInitializer;
     private final DistrictInitializer districtInitializer;
     private final NotificationTemplateInitializer notificationTemplateInitializer;
+    private final PaymentMethodInitializer paymentMethodInitializer;
 
     private final StorageService storageService;
     private final ObjectMapper objectMapper;
@@ -87,6 +89,8 @@ public class ConsoEpargneDataInitializerV2 implements ApplicationListener<Applic
             });
             districtInitializer.initializeDistricts(districtConfigs, dataInitializerProperties.isResetBeforeInit());
 
+            /// Payment Methods.
+            paymentMethodInitializer.initialize(config.getPaymentMethods(), dataInitializerProperties.isResetBeforeInit());
 
             /// Templates Notifications.
             List<TransactionTemplateMessageConfig> notificationConfigs = objectMapper.readValue(urls.get("templates").getInputStream(), new TypeReference<>() {
