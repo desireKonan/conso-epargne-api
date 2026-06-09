@@ -3,12 +3,9 @@ package org.marketplace_lea.order.domain.order.services.impl;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataException;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
 import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
-import org.marketplace_lea.order.domain.order.dto.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
 import org.marketplace_lea.order.domain.order.dto.UpdateOrderV2Form;
-import org.marketplace_lea.order.domain.order.events.OrderV2EventPublisher;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
-import org.marketplace_lea.order.domain.order.services.OrderCreationHandler;
 import org.marketplace_lea.order.domain.order.services.OrderCreationV2Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,13 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class DefaultOrderCreationV2Service implements OrderCreationV2Service {
     private final OrderV2JpaRepository orderRepository;
     private final OrderV2Mapper orderV2Mapper;
-    private final OrderCreationHandler orderCreationHandler;
-
-    @Override
-    public OrderV2DTO create(CreateOrderV2Form createDTO) {
-        log.info("[DefaultOrderCreationV2Service.create] Delegating to OrderCreationHandler for customer: {}", createDTO.customerId());
-        return orderCreationHandler.handleOrderCreation(createDTO);
-    }
 
     @Override
     @Transactional

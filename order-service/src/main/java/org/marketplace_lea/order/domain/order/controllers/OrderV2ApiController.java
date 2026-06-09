@@ -4,6 +4,7 @@ import org.marketplace_lea.order.domain.order.dto.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
 import org.marketplace_lea.order.domain.order.dto.OrderV2SearchForm;
 import org.marketplace_lea.order.domain.order.dto.UpdateOrderV2Form;
+import org.marketplace_lea.order.domain.order.services.OrderCreationHandler;
 import org.marketplace_lea.order.domain.order.services.OrderCreationV2Service;
 import org.marketplace_lea.order.domain.order.services.OrderV2Service;
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ import java.util.Optional;
 @RequestMapping("/orders")
 public class OrderV2ApiController {
     private final OrderV2Service orderV2Service;
+    private final OrderCreationHandler orderCreationHandler;
     private final OrderCreationV2Service orderCreationV2Service;
 
     @GetMapping
@@ -50,7 +52,7 @@ public class OrderV2ApiController {
 
     @PostMapping
     public ResponseEntity<OrderV2DTO> create(@Valid @RequestBody CreateOrderV2Form createDTO) {
-        OrderV2DTO created = orderCreationV2Service.create(createDTO);
+        OrderV2DTO created = orderCreationHandler.handleOrderCreation(createDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(created);
     }
