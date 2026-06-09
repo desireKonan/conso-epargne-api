@@ -302,12 +302,14 @@ public class RestGlobalExceptionControllerAdvice extends ResponseEntityException
                 VALIDATION_ERROR_TYPE,
                 ExceptionUserDisplay.ERROR
         );
-        problemDetail.setProperty("violations", ex.getConstraintViolations().stream()
-                .map(violation -> java.util.Map.of(
-                        "propertyPath", violation.getPropertyPath().toString(),
-                        "message", violation.getMessage()
-                ))
-                .collect(Collectors.toList()));
+        problemDetail.setProperty("violations",
+                ex.getConstraintViolations().stream()
+                        .map(violation -> java.util.Map.of(
+                                "propertyPath", violation.getPropertyPath().toString(),
+                                "message", violation.getMessage()
+                        ))
+                        .collect(Collectors.toList())
+        );
         return problemDetail;
     }
 
@@ -334,13 +336,17 @@ public class RestGlobalExceptionControllerAdvice extends ResponseEntityException
         );
 
         // Ajouter la liste complète des erreurs de validation
-        problemDetail.setProperty("errors", ex.getBindingResult().getFieldErrors().stream()
-                .map(error -> java.util.Map.of(
-                        "field", error.getField(),
-                        "rejectedValue", String.valueOf(error.getRejectedValue()),
-                        "message", error.getDefaultMessage()
-                ))
-                .collect(Collectors.toList()));
+        problemDetail.setProperty("errors",
+                ex.getBindingResult()
+                        .getFieldErrors()
+                        .stream()
+                        .map(error -> java.util.Map.of(
+                                "field", error.getField(),
+                                "rejectedValue", String.valueOf(error.getRejectedValue()),
+                                "message", error.getDefaultMessage()
+                        ))
+                        .collect(Collectors.toList())
+        );
 
         return ResponseEntity.status(status).body(problemDetail);
     }
