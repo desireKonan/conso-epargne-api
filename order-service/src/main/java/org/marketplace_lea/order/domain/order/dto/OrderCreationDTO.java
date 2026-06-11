@@ -5,7 +5,7 @@ import org.marketplace_lea.order.common.entities.order.OrderStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record OrderV2DTO(
+public record OrderCreationDTO(
     String id,
     String customerId,
     String customerName,

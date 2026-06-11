@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.dto;
+package org.marketplace_lea.order.domain.order.form;
 
 import org.marketplace_lea.order.common.entities.order.OrderStatus;
 

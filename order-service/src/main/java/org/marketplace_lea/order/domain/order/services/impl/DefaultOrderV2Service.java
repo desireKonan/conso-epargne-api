@@ -4,8 +4,8 @@ import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataExce
 import org.marketplace_lea.order.common.entities.order.OrderStatus;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
 import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
-import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
-import org.marketplace_lea.order.domain.order.dto.OrderV2SearchForm;
+import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
+import org.marketplace_lea.order.domain.order.form.OrderV2SearchForm;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
 import org.marketplace_lea.order.domain.order.services.OrderV2Service;
 import org.marketplace_lea.order.domain.order.services.specifications.OrderV2Specification;
@@ -32,19 +32,20 @@ public class DefaultOrderV2Service implements OrderV2Service {
     }
 
     @Override
-    public Page<OrderV2DTO> getAll(OrderV2SearchForm filterCriteria, Pageable pageable) {
+    public Page<OrderCreationDTO> getAll(OrderV2SearchForm filterCriteria, Pageable pageable) {
         var spec = OrderV2Specification.buildSpecification(filterCriteria);
         return orderRepository.findAll(spec, pageable)
                 .map(orderV2Mapper::toDTO);
     }
 
     @Override
-    public OrderV2DTO getById(String id) {
-        return orderV2Mapper.toDTO(getEntityById(id));
+    public OrderCreationDTO getById(String id) {
+        return findById(id)
+                .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Commande introuvable: " + id));
     }
 
     @Override
-    public Optional<OrderV2DTO> findById(String id) {
+    public Optional<OrderCreationDTO> findById(String id) {
         return orderRepository.findById(id)
                 .map(orderV2Mapper::toDTO);
     }
@@ -53,8 +54,7 @@ public class DefaultOrderV2Service implements OrderV2Service {
     @Transactional
     public void delete(String id) {
         log.info("[DefaultOrderV2Service.delete] Suppression de la commande: {}", id);
-        OrderV2Entity order = getEntityById(id);
-        orderRepository.delete(order);
+        orderRepository.deleteById(id);
     }
 
     @Override

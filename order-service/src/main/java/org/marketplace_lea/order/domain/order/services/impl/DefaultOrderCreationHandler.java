@@ -14,12 +14,12 @@ import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
 import org.marketplace_lea.order.common.repository.order.CartItemV2JpaRepository;
 import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
 import org.marketplace_lea.order.common.repository.order.VoucherV2JpaRepository;
-import org.marketplace_lea.order.domain.order.dto.CreateOrderV2Form;
-import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
+import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
+import org.marketplace_lea.order.domain.order.form.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.events.OrderPaidEvent;
 import org.marketplace_lea.order.domain.order.events.OrderV2EventPublisher;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
-import org.marketplace_lea.order.domain.order.services.OrderCreationHandler;
+import org.marketplace_lea.order.domain.order.services.OrderHandler;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.marketplace_lea.prometheus.domain.payment_method.repository.PaymentMethodJpaRepository;
@@ -30,6 +30,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
+import static org.marketplace_lea.common.common.utils.Calculator.calculateAmountWithFees;
 
 /**
  * Implementation of OrderCreationHandler that orchestrates the complete order creation process.
@@ -45,7 +47,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DefaultOrderCreationHandler implements OrderCreationHandler {
+public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Form, OrderCreationDTO> {
     private final OrderV2JpaRepository orderRepository;
     private final CustomerV2JpaRepository customerRepository;
     private final OrderV2Mapper orderV2Mapper;
@@ -55,7 +57,7 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
     private final OrderV2EventPublisher eventPublisher;
 
     @Override
-    public OrderV2DTO handleOrderCreation(CreateOrderV2Form createDTO) {
+    public OrderCreationDTO handle(CreateOrderV2Form createDTO) {
         // Step 1: Get customer
         CustomerV2Entity customer = customerRepository.findById(createDTO.customerId())
                 .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Client introuvable: " + createDTO.customerId()));
@@ -141,7 +143,7 @@ public class DefaultOrderCreationHandler implements OrderCreationHandler {
         order.setDeliveryFees(deliveryFees);
 
         // Step 8: Calculate amount with fees
-        float amount = Calculator.calculateAmountWithFees(order.retrieveTotalOrderPrice(), deliveryFees);
+        float amount = calculateAmountWithFees(order.retrieveTotalOrderPrice(), deliveryFees);
         order.setTotalAmount((float) (amount + order.retrieveTotalOrderPrice()));
 
         var paymentDetailsFound = paymentMethodJpaRepository.findByProvider(createDTO.provider());

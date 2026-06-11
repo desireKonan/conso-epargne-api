@@ -3,8 +3,8 @@ package org.marketplace_lea.order.domain.order.services.impl;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataException;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
 import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
-import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
-import org.marketplace_lea.order.domain.order.dto.UpdateOrderV2Form;
+import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
+import org.marketplace_lea.order.domain.order.form.UpdateOrderV2Form;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
 import org.marketplace_lea.order.domain.order.services.OrderCreationV2Service;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class DefaultOrderCreationV2Service implements OrderCreationV2Service {
 
     @Override
     @Transactional
-    public OrderV2DTO update(String id, UpdateOrderV2Form updateDTO) {
+    public OrderCreationDTO update(String id, UpdateOrderV2Form updateDTO) {
         log.info("[DefaultOrderCreationV2Service.update] Mise à jour de la commande: {}", id);
         OrderV2Entity order = orderRepository.findById(id)
                 .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Commande introuvable: " + id));

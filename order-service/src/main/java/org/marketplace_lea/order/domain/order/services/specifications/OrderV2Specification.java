@@ -1,7 +1,7 @@
 package org.marketplace_lea.order.domain.order.services.specifications;
 
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
-import org.marketplace_lea.order.domain.order.dto.OrderV2SearchForm;
+import org.marketplace_lea.order.domain.order.form.OrderV2SearchForm;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 

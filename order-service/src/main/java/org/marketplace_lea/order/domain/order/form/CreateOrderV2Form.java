@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.dto;
+package org.marketplace_lea.order.domain.order.form;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

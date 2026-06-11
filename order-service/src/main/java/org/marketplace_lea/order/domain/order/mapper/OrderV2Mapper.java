@@ -2,9 +2,9 @@ package org.marketplace_lea.order.domain.order.mapper;
 
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
-import org.marketplace_lea.order.domain.order.dto.CreateOrderV2Form;
-import org.marketplace_lea.order.domain.order.dto.OrderV2DTO;
-import org.marketplace_lea.order.domain.order.dto.UpdateOrderV2Form;
+import org.marketplace_lea.order.domain.order.form.CreateOrderV2Form;
+import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
+import org.marketplace_lea.order.domain.order.form.UpdateOrderV2Form;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -16,7 +16,7 @@ public interface OrderV2Mapper {
     @Mapping(source = "customer.id", target = "customerId")
     @Mapping(source = "customer", target = "customerName", qualifiedByName = "customerName")
     @Mapping(source = "voucher.id", target = "voucherId")
-    OrderV2DTO toDTO(OrderV2Entity entity);
+    OrderCreationDTO toDTO(OrderV2Entity entity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "customer", ignore = true)
