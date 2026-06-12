@@ -82,5 +82,7 @@ public interface ConsoEpargneConstants {
 
     String ALGORITHM_WEBHOOK = "HmacSHA256";
 
+    String AUTHORIZATION = "Authorization";
+
     String WAVE_SIGNATURE_HEADER = "Wave-Signature";
 }

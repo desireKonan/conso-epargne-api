@@ -1,5 +1,6 @@
 package org.marketplace_lea.common.common.service.jwt;
 
+import org.marketplace_lea.common.dtos.CustomerTokenInfo;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.util.List;
@@ -13,6 +14,10 @@ public interface JwtTokenService {
     String extractUsername(String token);
 
     List<String> extractRoles(String token);
+
+    Map<String, Object> parseToken(String token);
+
+    CustomerTokenInfo extractCustomerInfo(String token);
 
     boolean isTokenExpired(String token);
 

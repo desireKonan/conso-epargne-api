@@ -2,7 +2,6 @@ package org.marketplace_lea.order.domain.order.services.impl;
 
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneException;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneNotFoundDataException;
-import org.marketplace_lea.common.common.utils.Calculator;
 import org.marketplace_lea.common.common.utils.GeneratorUtils;
 import org.marketplace_lea.common.entities.DistrictEntity;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
@@ -17,7 +16,7 @@ import org.marketplace_lea.order.common.repository.order.VoucherV2JpaRepository;
 import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
 import org.marketplace_lea.order.domain.order.form.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.events.OrderPaidEvent;
-import org.marketplace_lea.order.domain.order.events.OrderV2EventPublisher;
+import org.marketplace_lea.common.common.event.OrderV2EventPublisher;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
 import org.marketplace_lea.order.domain.order.services.OrderHandler;
 import lombok.RequiredArgsConstructor;
@@ -54,13 +53,13 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
     private final CartItemV2JpaRepository cartItemV2JpaRepository;
     private final VoucherV2JpaRepository voucherV2JpaRepository;
     private final PaymentMethodJpaRepository paymentMethodJpaRepository;
-    private final OrderV2EventPublisher eventPublisher;
+    private final OrderV2EventPublisher<OrderPaidEvent> eventPublisher;
 
     @Override
     public OrderCreationDTO handle(CreateOrderV2Form createDTO) {
         // Step 1: Get customer
-        CustomerV2Entity customer = customerRepository.findById(createDTO.customerId())
-                .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Client introuvable: " + createDTO.customerId()));
+        CustomerV2Entity customer = customerRepository.findById(createDTO.getCustomerId())
+                .orElseThrow(() -> new ConsoEpargneNotFoundDataException("Client introuvable: " + createDTO.getCustomerId()));
 
         // Step 2: Create Order (Transaction).
         var orderCreated = createOrder(createDTO, customer);
@@ -112,7 +111,7 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
 
     @Transactional
     private OrderV2Entity createOrder(CreateOrderV2Form createDTO, CustomerV2Entity customer) {
-        log.info("[DefaultOrderCreationHandler.createOrder] Starting order creation for customer: {}", createDTO.customerId());
+        log.info("[DefaultOrderCreationHandler.createOrder] Starting order creation for customer: {}", createDTO.getCustomerId());
 
         // Step 2: Validation de la commande.
         validateCartOrder(customer.getId());
@@ -129,7 +128,7 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
         order.setCreatedAt(LocalDateTime.now());
 
         // Step 6: Handle voucher if provided
-        if (createDTO.voucherId() != null && !createDTO.voucherId().isBlank()) {
+        if (createDTO.getVoucherId() != null && !createDTO.getVoucherId().isBlank()) {
             log.info("[DefaultOrderCreationHandler.createOrder] Voucher handled in PaymentDetailService");
             var voucherFound = voucherV2JpaRepository.getValidVoucherByCustomerId(customer.getId());
             voucherFound.ifPresent(order::setVoucher);
@@ -146,7 +145,7 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
         float amount = calculateAmountWithFees(order.retrieveTotalOrderPrice(), deliveryFees);
         order.setTotalAmount((float) (amount + order.retrieveTotalOrderPrice()));
 
-        var paymentDetailsFound = paymentMethodJpaRepository.findByProvider(createDTO.provider());
+        var paymentDetailsFound = paymentMethodJpaRepository.findByProvider(createDTO.getProvider());
 
         paymentDetailsFound.ifPresent(paymentMethodEntity -> {
             if (paymentMethodEntity.isMobileMoneyPayment()) {
@@ -163,7 +162,7 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
         cartItemV2JpaRepository.deleteByCustomerId(customer.getId());
         log.info("[DefaultOrderCreationHandler.createOrder] Cart deletion skipped (TODO)");
 
-        log.info("[DefaultOrderCreationHandler.createOrder] Order creation completed for customer: {}", createDTO.customerId());
+        log.info("[DefaultOrderCreationHandler.createOrder] Order creation completed for customer: {}", createDTO.getProvider());
         return orderSaved;
     }
 }

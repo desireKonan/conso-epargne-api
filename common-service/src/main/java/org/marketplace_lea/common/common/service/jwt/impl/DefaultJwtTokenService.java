@@ -10,6 +10,7 @@ import com.nimbusds.jwt.SignedJWT;
 import org.marketplace_lea.common.common.service.jwt.JwtTokenService;
 import org.marketplace_lea.common.common.service.jwt.properties.JwtProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.dtos.CustomerTokenInfo;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -129,6 +130,28 @@ public class DefaultJwtTokenService implements JwtTokenService {
             log.error("Failed to parse token for roles extraction", e);
             return List.of();
         }
+    }
+
+    @Override
+    public Map<String, Object> parseToken(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            MACVerifier verifier = new MACVerifier(jwtProperties.getSecret().getBytes());
+            if (!signedJWT.verify(verifier)) {
+                log.warn("Invalid JWT signature");
+                return Map.of();
+            }
+            return signedJWT.getJWTClaimsSet().getClaims();
+        } catch (ParseException | JOSEException e) {
+            log.warn("Token validation failed: {}", e.getMessage());
+            return Map.of();
+        }
+    }
+
+    @Override
+    public CustomerTokenInfo extractCustomerInfo(String token) {
+        var extractedData = parseToken(token);
+        return (CustomerTokenInfo) extractedData.getOrDefault("customer", null);
     }
 
 

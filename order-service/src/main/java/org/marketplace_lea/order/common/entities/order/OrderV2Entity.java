@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.marketplace_lea.order.common.entities.inventory.ProductType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -127,6 +128,13 @@ public class OrderV2Entity {
             sum += oi.retrieveTotal();
         }
         return sum;
+    }
+
+
+    public Optional<OrderItemV2Entity> getAdherantKit() {
+        return orderItems.stream()
+                .filter(orderItemV2Entity -> ProductType.ADHERANT_KIT.equals(orderItemV2Entity.getProductType()))
+                .findAny();
     }
 
     @JsonIgnore

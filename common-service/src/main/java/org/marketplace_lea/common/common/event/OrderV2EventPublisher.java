@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.events;
+package org.marketplace_lea.common.common.event;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
  * Based on EventPublisher from common-service, adapted for v2 events.
  */
 @Component
-public class OrderV2EventPublisher {
+public class OrderV2EventPublisher<T> {
     private final ApplicationEventPublisher eventPublisher;
 
     public OrderV2EventPublisher(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 
-    public void publish(OrderV2Event event) {
+    public void publish(T event) {
         eventPublisher.publishEvent(event);
     }
 }
