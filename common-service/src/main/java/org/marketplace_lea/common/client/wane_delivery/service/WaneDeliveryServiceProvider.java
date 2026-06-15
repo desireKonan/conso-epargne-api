@@ -6,7 +6,7 @@ import org.marketplace_lea.common.client.wane_delivery.response.EstimationPriceR
 import org.marketplace_lea.common.client.wane_delivery.response.WaneDeliveryResponse;
 import org.marketplace_lea.common.client.wane_delivery.form.GeoPosForm;
 
-public interface WaneDeliveryService {
+public interface WaneDeliveryServiceProvider {
     WaneDeliveryResponse<EstimationPriceResponse> estimatePrice(GeoPosForm form, String correlationId);
 
     WaneDeliveryResponse<DeliveryRequestResponse> createRequest(DeliveryRequestForm form, String correlationId);

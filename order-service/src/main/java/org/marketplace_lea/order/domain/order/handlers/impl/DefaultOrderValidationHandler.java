@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.services.impl;
+package org.marketplace_lea.order.domain.order.handlers.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,10 @@ import org.marketplace_lea.order.common.repository.order.OrderV2JpaRepository;
 import org.marketplace_lea.order.domain.order.dto.OrderValidationDTO;
 import org.marketplace_lea.common.common.event.OrderV2EventPublisher;
 import org.marketplace_lea.order.domain.order.events.OrderSubscriptionValidatedEvent;
+import org.marketplace_lea.order.domain.order.events.OrderV2Event;
+import org.marketplace_lea.order.domain.order.events.OrderValidationEvent;
 import org.marketplace_lea.order.domain.order.form.OrderValidationForm;
-import org.marketplace_lea.order.domain.order.services.OrderHandler;
+import org.marketplace_lea.order.domain.order.handlers.OrderHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,7 +40,7 @@ import static org.marketplace_lea.order.common.entities.order.OrderStatus.VALIDA
 public class DefaultOrderValidationHandler implements OrderHandler<OrderValidationForm, OrderValidationDTO> {
     private final OrderV2JpaRepository orderV2JpaRepository;
     private final CustomerV2JpaRepository customerV2JpaRepository;
-    private final OrderV2EventPublisher<OrderSubscriptionValidatedEvent> eventPublisher;
+    private final OrderV2EventPublisher<OrderV2Event> eventPublisher;
 
     @Override
     @Transactional
@@ -103,7 +105,7 @@ public class DefaultOrderValidationHandler implements OrderHandler<OrderValidati
 
         /// Si la commande est valide, on exécute un évenement pour
         if(orderSaved.isValidated()) {
-            eventPublisher.publish(new OrderSubscriptionValidatedEvent(null, customerId));
+            eventPublisher.publish(new OrderValidationEvent(null));
         }
     }
 }

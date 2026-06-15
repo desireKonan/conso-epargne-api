@@ -3,7 +3,7 @@ package org.marketplace_lea.order.domain.order.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.marketplace_lea.common.client.wane_delivery.form.DeliveryRequestForm;
-import org.marketplace_lea.common.client.wane_delivery.service.WaneDeliveryService;
+import org.marketplace_lea.common.client.wane_delivery.service.WaneDeliveryServiceProvider;
 import org.marketplace_lea.common.common.utils.GeneratorUtils;
 import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.order.common.entities.order.OrderV2Entity;
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class OrderPaidListener {
-    private final WaneDeliveryService waneDeliveryService;
+public class OrderPaidDeliveryListener {
+    private final WaneDeliveryServiceProvider waneDeliveryServiceProvider;
 
     @EventListener
     @Async("eventTaskExecutor")
@@ -30,7 +30,7 @@ public class OrderPaidListener {
                 DeliveryRequestForm deliveryForm = buildDeliveryRequestForm(order, event.getCustomer());
                 // Générer un correlation ID pour le tracking
                 String correlationId = GeneratorUtils.getCurrentCorrelationId();
-                var response = waneDeliveryService.createRequest(deliveryForm, correlationId);
+                var response = waneDeliveryServiceProvider.createRequest(deliveryForm, correlationId);
                 log.info("[OrderPaidListener][handleDispatchingOrderOperation] End processing dispatch order operation for Id: {} at {} - response:  {}", event.getId(), LocalDateTime.now(), response.message());
             }
         } catch (Exception ex) {

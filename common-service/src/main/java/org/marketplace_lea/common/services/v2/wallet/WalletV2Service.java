@@ -2,7 +2,7 @@ package org.marketplace_lea.common.services.v2.wallet;
 
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
-import org.marketplace_lea.common.dtos.WalletAccountV2DTO;
+import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
@@ -81,7 +81,7 @@ public interface WalletV2Service {
      * @param pageable critères de pagination
      * @return page de WalletAccountV2DTO
      */
-    Page<WalletAccountV2DTO> getAvailableConsomPointsForSale(Pageable pageable);
+    Page<WalletV2DTO> getAvailableConsomPointsForSale(Pageable pageable);
 
     /**
      * Retourne la liste paginée des comptes ayant un solde ConsoM positif.
@@ -89,7 +89,7 @@ public interface WalletV2Service {
      * @param pageable critères de pagination
      * @return page de WalletAccountV2DTO
      */
-    Page<WalletAccountV2DTO> getPeopleWithConsomPoints(Pageable pageable);
+    Page<WalletV2DTO> getPeopleWithConsomPoints(Pageable pageable);
 
     /**
      * Récupère le DTO d'un wallet ConsoM pour un compte donné.

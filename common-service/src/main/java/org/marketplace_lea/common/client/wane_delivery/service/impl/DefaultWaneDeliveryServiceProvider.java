@@ -9,7 +9,7 @@ import org.marketplace_lea.common.client.wane_delivery.form.GeoPosForm;
 import org.marketplace_lea.common.client.wane_delivery.response.DeliveryRequestResponse;
 import org.marketplace_lea.common.client.wane_delivery.response.EstimationPriceResponse;
 import org.marketplace_lea.common.client.wane_delivery.response.WaneDeliveryResponse;
-import org.marketplace_lea.common.client.wane_delivery.service.WaneDeliveryService;
+import org.marketplace_lea.common.client.wane_delivery.service.WaneDeliveryServiceProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class DefaultWaneDeliveryService implements WaneDeliveryService {
+public class DefaultWaneDeliveryServiceProvider implements WaneDeliveryServiceProvider {
     private final WaneDeliveryClient waneDeliveryClient;
     private final WaneDeliveryPropertiesConfig waneDeliveryProperties;
 

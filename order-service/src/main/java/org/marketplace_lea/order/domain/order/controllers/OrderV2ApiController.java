@@ -2,13 +2,12 @@ package org.marketplace_lea.order.domain.order.controllers;
 
 import org.marketplace_lea.common.common.constants.ConsoEpargneConstants;
 import org.marketplace_lea.common.common.service.jwt.JwtTokenService;
-import org.marketplace_lea.common.dtos.CustomerTokenInfo;
 import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
 import org.marketplace_lea.order.domain.order.dto.OrderValidationDTO;
 import org.marketplace_lea.order.domain.order.form.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.form.OrderV2SearchForm;
 import org.marketplace_lea.order.domain.order.form.OrderValidationForm;
-import org.marketplace_lea.order.domain.order.services.OrderHandler;
+import org.marketplace_lea.order.domain.order.handlers.OrderHandler;
 import org.marketplace_lea.order.domain.order.services.OrderV2Service;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

@@ -9,7 +9,7 @@ import org.marketplace_lea.common.common.exceptions.ConsoWalletException;
 import org.marketplace_lea.common.common.utils.ConvertValueConsoUtils;
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
-import org.marketplace_lea.common.dtos.WalletAccountV2DTO;
+import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.CurrencyV2Entity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
@@ -162,12 +162,12 @@ public class WalletV2ServiceImpl implements WalletV2Service {
     }
 
     @Override
-    public Page<WalletAccountV2DTO> getAvailableConsomPointsForSale(Pageable pageable) {
+    public Page<WalletV2DTO> getAvailableConsomPointsForSale(Pageable pageable) {
         return walletRepository.findAvailableConsomPointsForSale(pageable);
     }
 
     @Override
-    public Page<WalletAccountV2DTO> getPeopleWithConsomPoints(Pageable pageable) {
+    public Page<WalletV2DTO> getPeopleWithConsomPoints(Pageable pageable) {
         return walletRepository.findWalletsByBalancePositive(WalletV2Type.CONSOM, pageable);
     }
 

@@ -133,7 +133,7 @@ public class OrderV2Entity {
 
     public Optional<OrderItemV2Entity> getAdherantKit() {
         return orderItems.stream()
-                .filter(orderItemV2Entity -> ProductType.ADHERANT_KIT.equals(orderItemV2Entity.getProductType()))
+                .filter(orderItem -> ProductType.ADHERANT_KIT.equals(orderItem.getProductType()))
                 .findAny();
     }
 

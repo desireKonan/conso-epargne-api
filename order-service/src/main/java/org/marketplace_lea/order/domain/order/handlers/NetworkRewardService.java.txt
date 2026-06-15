@@ -1,0 +1,92 @@
+package org.marketplace_lea.order.domain.order.handlers;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.entities.account.AccountSponsorshipEntity;
+import org.marketplace_lea.common.entities.account.AccountV2Entity;
+import org.marketplace_lea.common.entities.transaction.Transaction;
+import org.marketplace_lea.common.entities.transaction.TransactionType;
+import org.marketplace_lea.common.entities.wallet.PersonalWallet;
+import org.marketplace_lea.common.repositories.AccountSponsorshipRepository;
+import org.marketplace_lea.common.services.TransactionService;
+import org.marketplace_lea.common.services.WalletService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class NetworkRewardService {
+
+    private final WalletService walletService;
+    private final TransactionService transactionService;
+    private final AccountSponsorshipRepository sponsorshipRepository;
+
+    /**
+     * Distribue les récompenses au réseau de parrainage.
+     *
+     * @param account   le compte à l'origine de la récompense
+     * @param amount    le montant à distribuer
+     * @param maxLevel  le nombre maximum de niveaux à remonter
+     */
+    public void dispatchToNetwork(AccountV2Entity account, float amount, int maxLevel) {
+        try {
+            List<PersonalWallet> wallets = new ArrayList<>();
+            List<Transaction> transactions = new ArrayList<>();
+            
+            // Récupérer le parent direct
+            Optional<AccountSponsorshipEntity> currentSponsorship = sponsorshipRepository.findActiveSponsorByChildId(account.getId());
+            int level = 1;
+            
+            while (currentSponsorship.isPresent() && level <= maxLevel) {
+                AccountV2Entity parent = currentSponsorship.get().getParent();
+                
+                // Vérifier que le parent n'est pas le compte système
+                if (parent.hasSystemType()) {
+                    log.info("[NetworkRewardService.dispatchToNetwork] Reached system account at level {}, stopping", level);
+                    break;
+                }
+                
+                PersonalWallet wallet = walletService.getOrCreatePersonalWallet(parent);
+                
+                if (level == 1) {
+                    wallet.addToFirstLevelSaving(amount);
+                    log.debug("[NetworkRewardService.dispatchToNetwork] Added {} to first level saving for parent {}", amount, parent.getId());
+                }
+                
+                wallet.addToNetworkSaving(amount);
+                
+                Transaction transaction = transactionService.createNewTransaction(
+                    null, wallet, amount, TransactionType.NETWORK_PAYMENT
+                );
+                transaction.setInitiator(account);
+                transactions.add(transaction);
+                wallets.add(wallet);
+                
+                log.info("[NetworkRewardService.dispatchToNetwork] Added {} to parent {} at level {}", 
+                    amount, parent.getId(), level);
+                
+                // Passer au niveau supérieur
+                currentSponsorship = sponsorshipRepository.findActiveSponsorByChildId(parent.getId());
+                level++;
+            }
+            
+            if (!wallets.isEmpty()) {
+                walletService.save(wallets);
+                transactions.forEach(Transaction::validate);
+                transactionService.save(transactions);
+                log.info("[NetworkRewardService.dispatchToNetwork] Successfully dispatched {} to {} sponsors", 
+                    amount, wallets.size());
+            } else {
+                log.info("[NetworkRewardService.dispatchToNetwork] No eligible sponsors found for account {}", account.getId());
+            }
+            
+        } catch (Exception e) {
+            log.error("[NetworkRewardService.dispatchToNetwork] Error dispatching to network for account {}: {}", 
+                account.getId(), e.getMessage(), e);
+            throw new RuntimeException("Failed to dispatch to network", e);
+        }
+    }
+}

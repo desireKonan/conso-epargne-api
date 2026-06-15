@@ -44,13 +44,14 @@ public class TransactionNotificationTemplateServiceImpl implements TransactionNo
     @Transactional
     public TransactionNotificationTemplateDto create(TransactionNotificationTemplateForm form) {
         // Vérification d'unicité de la clé (exacte)
-        Specification<TransactionNotificationTemplateEntity> exactKeySpec = 
-                (root, q, cb) -> cb.equal(root.get("key"), form.getKey());
-        if (repository.findOne(exactKeySpec).isPresent()) {
+        if (repository.getByKey(form.getKey()).isPresent()) {
+            log.error("Transaction already exists !");
             throw new IllegalArgumentException("La clé '" + form.getKey() + "' est déjà utilisée.");
         }
         TransactionNotificationTemplateEntity entity = mapper.toEntity(form);
-        return mapper.toDto(repository.save(entity));
+        var templateSaved = repository.save(entity);
+        log.info("Transaction created: {}", templateSaved.getId());
+        return mapper.toDto(templateSaved);
     }
 
     @Override
@@ -61,13 +62,15 @@ public class TransactionNotificationTemplateServiceImpl implements TransactionNo
 
         // Vérification de l'unicité de la clé si elle a changé
         if (!existing.getKey().equals(form.getKey())) {
-            Specification<TransactionNotificationTemplateEntity> exactKeySpec = (root, q, cb) -> cb.equal(root.get("key"), form.getKey());
-            if (repository.findOne(exactKeySpec).isPresent()) {
+            if (repository.getByKey(form.getKey()).isPresent()) {
+                log.error("Transaction already exists !");
                 throw new IllegalArgumentException("La clé '" + form.getKey() + "' est déjà utilisée.");
             }
         }
         mapper.updateEntity(existing, form);
-        return mapper.toDto(repository.save(existing));
+        var templateSaved = repository.save(existing);
+        log.info("Transaction created: {}", templateSaved.getId());
+        return mapper.toDto(templateSaved);
     }
 
     @Override

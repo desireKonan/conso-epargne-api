@@ -1,4 +1,4 @@
-package org.marketplace_lea.common.dtos;
+package org.marketplace_lea.common.dtos.wallets;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletAccountV2DTO {
+public class WalletDTO {
     private String walletId;
     private BigDecimal investedCoinAmount;
     private BigDecimal balance;
@@ -19,6 +19,3 @@ public class WalletAccountV2DTO {
     private String accountLogin;
     private String numberAndOperator;
 }
-
-
-

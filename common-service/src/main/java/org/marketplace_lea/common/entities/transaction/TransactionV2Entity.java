@@ -33,7 +33,7 @@ import static org.marketplace_lea.common.entities.transaction.TransactionType.LE
 })
 public class TransactionV2Entity {
     @Id
-    @Column(nullable = false)
+    @Column(name = "id", nullable = false)
     private String id;
 
     @ManyToOne(optional = false)
@@ -100,5 +100,10 @@ public class TransactionV2Entity {
 
     public int correctAmount() {
         return hasLeaCoinPayment() ? retrieveIntTotalAmount() : retrieveTotalAmount().intValue();
+    }
+
+
+    public boolean hasSameSource() {
+        return source != null && destination != null && source.equals(destination);
     }
 }

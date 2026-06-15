@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.services;
+package org.marketplace_lea.order.domain.order.handlers;
 
 /**
  * Handler for order creation orchestration.
