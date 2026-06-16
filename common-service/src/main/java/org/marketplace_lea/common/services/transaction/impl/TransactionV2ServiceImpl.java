@@ -13,7 +13,7 @@ import org.marketplace_lea.common.forms.transactions.TransactionV2SearchCriteria
 import org.marketplace_lea.common.forms.transactions.ValidateTransactionForm;
 import org.marketplace_lea.common.forms.transactions.ValidationTransactionStatus;
 import org.marketplace_lea.common.mapper.TransactionV2Mapper;
-import org.marketplace_lea.common.repositories.TransactionV2Repository;
+import org.marketplace_lea.common.repositories.TransactionV2JpaRepository;
 import org.marketplace_lea.common.services.transaction.TransactionV2Service;
 import org.marketplace_lea.common.services.transaction.specifications.TransactionSpecification;
 import org.marketplace_lea.common.services.wallet.WalletV2Service;
@@ -32,7 +32,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class TransactionV2ServiceImpl implements TransactionV2Service {
-    private final TransactionV2Repository transactionRepository;
+    private final TransactionV2JpaRepository transactionRepository;
     private final WalletV2Service walletService;
     private final TransactionV2Mapper transactionMapper;
 

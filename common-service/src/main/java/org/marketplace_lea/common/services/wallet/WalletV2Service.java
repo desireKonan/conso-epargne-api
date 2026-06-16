@@ -2,6 +2,7 @@ package org.marketplace_lea.common.services.wallet;
 
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
+import org.marketplace_lea.common.dtos.wallets.WalletDTO;
 import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -137,6 +139,13 @@ public interface WalletV2Service {
      * @return message de confirmation
      */
     String convertPointsToLea(AccountV2Entity account, int points);
+
+    /**
+     * Met à jour plusieurs wallets
+     *
+     * @return List<WalletV2DTO>
+     */
+    List<WalletDTO> save(List<WalletV2Entity> walletV2Entities);
 
     /**
      * Retourne les totaux globaux des wallets ConsoM sous forme de DTO.

@@ -3,7 +3,6 @@ package org.marketplace_lea.order.domain.order.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.marketplace_lea.order.common.entities.order.OrderItemV2Entity;
-import org.marketplace_lea.order.common.repository.order.OrderItemV2JpaRepository;
 import org.marketplace_lea.order.domain.order.events.OrderValidationEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +15,6 @@ import java.util.Optional;
 @Component
 @RequiredArgsConstructor
 public class OrderValidationPaymentListener {
-    private final OrderItemV2JpaRepository orderItemRepository;
     // private final AccountTransactionManagerV2 accountTransactionManager;
 
     @EventListener

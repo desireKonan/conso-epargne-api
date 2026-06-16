@@ -9,6 +9,7 @@ import org.marketplace_lea.common.common.exceptions.ConsoWalletException;
 import org.marketplace_lea.common.common.utils.ConvertValueConsoUtils;
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
+import org.marketplace_lea.common.dtos.wallets.WalletDTO;
 import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.CurrencyV2Entity;
@@ -16,6 +17,7 @@ import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import org.marketplace_lea.common.entities.transaction.TransactionV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Type;
+import org.marketplace_lea.common.mapper.WalletMapper;
 import org.marketplace_lea.common.repositories.CurrencyJpaRepository;
 import org.marketplace_lea.common.repositories.WalletV2JpaRepository;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Implémentation du service de gestion des wallets V2.
@@ -45,6 +44,7 @@ import java.util.Set;
 public class WalletV2ServiceImpl implements WalletV2Service {
     private final WalletV2JpaRepository walletRepository;
     private final CurrencyJpaRepository currencyRepository;
+    private final WalletMapper walletMapper;
 
     // ==================== Méthodes publiques principales ====================
 
@@ -292,6 +292,14 @@ public class WalletV2ServiceImpl implements WalletV2Service {
     }
 
     @Override
+    public List<WalletDTO> save(List<WalletV2Entity> walletV2Entities) {
+        List<WalletV2Entity> walletsSaved = walletRepository.saveAll(walletV2Entities);
+        return walletsSaved.stream()
+                .map(walletMapper::toDto)
+                .toList();
+    }
+
+    @Override
     public ConsomWalletStatsDTO getStatsWallet() {
         Optional<ConsomWalletStatsDTO> walletStatsDTO = walletRepository.getConsomWalletStats(WalletV2Type.CONSOM);
         return walletStatsDTO.orElse(ConsomWalletStatsDTO.ZERO());
@@ -326,7 +334,7 @@ public class WalletV2ServiceImpl implements WalletV2Service {
         WalletV2Entity wallet = new WalletV2Entity();
         wallet.setAccount(account);
         wallet.setWalletType(type);
-        wallet.setDevise(currency.getCode());
+        wallet.setCurrency(currency.getCode());
         wallet.setBalance(BigDecimal.ZERO);
         wallet.setTotalAmountSend(BigDecimal.ZERO);
         wallet.setTotalAmountReceived(BigDecimal.ZERO);

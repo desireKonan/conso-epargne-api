@@ -277,7 +277,7 @@ public class DefaultCustomerProfileService implements CustomerProfileService {
      * @return liste des comptes enfants
      */
     private List<AccountV2Entity> getDirectChildren(String parentAccountId) {
-        return sponsorshipRepository.findActiveByParentId(parentAccountId)
+        return sponsorshipRepository.getActiveByParentId(parentAccountId)
                 .stream()
                 .map(AccountSponsorshipEntity::getChild)
                 .toList();

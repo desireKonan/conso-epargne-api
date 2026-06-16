@@ -23,7 +23,17 @@ public interface AccountSponsorshipJpaRepository extends JpaRepository<AccountSp
      * @return liste des parrainages avec les comptes enfants chargés
      */
     @Query("SELECT s FROM AccountSponsorship s JOIN FETCH s.child WHERE s.parent.id = :parentId AND s.resignedAt IS NULL")
-    List<AccountSponsorshipEntity> findActiveByParentId(@Param("parentId") String parentId);
+    List<AccountSponsorshipEntity> getActiveByParentId(@Param("parentId") String parentId);
+
+
+    /**
+     * Récupère tous les parrainages actifs (non résiliés) pour un parent donné.
+     *
+     * @param childId identifiant du compte parent
+     * @return liste des parrainages avec les comptes enfants chargés
+     */
+    @Query("SELECT s FROM AccountSponsorship s JOIN FETCH s.parent WHERE s.child.id = :childId AND s.resignedAt IS NULL")
+    Optional<AccountSponsorshipEntity> getActiveSponsorByChildId(@Param("childId") String childId);
 
     /**
      * Récupère tous les parrainages actifs pour une liste de parents (batch).

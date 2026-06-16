@@ -22,6 +22,7 @@ import org.marketplace_lea.common.entities.account.AccountV2Entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import static org.marketplace_lea.common.common.utils.GeneratorUtils.generateWalletId;
 
@@ -47,8 +48,8 @@ public class WalletV2Entity extends BaseEntity {
     @Column(name = "number_operator", nullable = false)
     private String numberAndOperator;
 
-    @Column(name = "devise", nullable = false)
-    private String devise;
+    @Column(name = "currency", nullable = false)
+    private String currency;
 
     @Column(name = "balance", columnDefinition = "DECIMAL(10, 4)", nullable = false)
     private BigDecimal balance = BigDecimal.ZERO;
@@ -180,10 +181,54 @@ public class WalletV2Entity extends BaseEntity {
         investmentProfitsBalance = investmentProfitsBalance.subtract(amount);
     }
 
+    public void addToPersonalSaving(float amount) {
+        personalSavingAmount = personalSavingAmount.add(BigDecimal.valueOf(amount));
+    }
+
+    public void addToFirstLevelSaving(float amount) {
+        if (amount > 0) {
+            firstLevelSavingAmount = firstLevelSavingAmount.add(BigDecimal.valueOf(amount));
+        }
+    }
+
+    public void addToNetworkSaving(float amount) {
+        addToBalance(BigDecimal.valueOf(amount));
+        networkSavingAmount = networkSavingAmount.add(BigDecimal.valueOf(amount));
+    }
+
+    public void addToSpecialBonusAmount(float amount) {
+        specialBonusAmount = specialBonusAmount.add(BigDecimal.valueOf(amount));
+    }
+
     public void validPoints(int points, String message) {
         if (balance.intValue() < points) {
             throw new WalletOperationForbiddenException(message);
         }
+    }
+
+    public float retrieveTotalReceived() {
+        return Stream.of(partnerBonusAmount, personalSavingAmount, networkSavingAmount, specialBonusAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .floatValue();
+    }
+
+    public void addToVoucherAmount(float amount) {
+        voucherAmount = voucherAmount.add(BigDecimal.valueOf(amount));
+    }
+
+    public void updateBalance() {
+        BigDecimal balance = retrieveTotalReceived() - totalDrawnAmount.floatValue() < 0 ?
+                BigDecimal.ZERO :
+                BigDecimal.valueOf(retrieveTotalReceived()).subtract(totalDrawnAmount);
+        setBalance(balance);
+    }
+
+    public void reset() {
+        partnerBonusAmount = BigDecimal.ZERO;
+        personalSavingAmount = BigDecimal.ZERO;
+        firstLevelSavingAmount = BigDecimal.ZERO;
+        networkSavingAmount = BigDecimal.ZERO;
+        specialBonusAmount = BigDecimal.ZERO;
     }
 
 
