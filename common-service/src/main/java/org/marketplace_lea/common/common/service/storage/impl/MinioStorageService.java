@@ -62,10 +62,9 @@ public class MinioStorageService implements StorageService {
                 log.info("Created bucket: {}", bucketName);
             }
         } catch (ErrorResponseException | InsufficientDataException | InternalException |
-                 InvalidKeyException | IOException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException | InvalidResponseException e) {
+                InvalidKeyException | IOException | NoSuchAlgorithmException | ServerException |
+                XmlParserException | InvalidResponseException e) {
             log.error("Could not initialize Minio storage: {}", e.getMessage(), e);
-            throw new StorageException("Could not initialize Minio storage", e);
         }
     }
 
@@ -80,7 +79,7 @@ public class MinioStorageService implements StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file.");
             }
-            
+
             try (InputStream inputStream = file.getInputStream()) {
                 minioClient.putObject(
                         PutObjectArgs.builder()
@@ -104,8 +103,8 @@ public class MinioStorageService implements StorageService {
     public Stream<Path> loadAll() {
         try {
             Iterable<Result<Item>> results = minioClient.listObjects(ListObjectsArgs.builder()
-                            .bucket(bucketName)
-                            .build());
+                    .bucket(bucketName)
+                    .build());
             List<Path> paths = new ArrayList<>();
             for (Result<Item> result : results) {
                 paths.add(Path.of(result.get().objectName()));
@@ -113,7 +112,7 @@ public class MinioStorageService implements StorageService {
             return paths.stream();
         } catch (ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | IOException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException  | InvalidResponseException e) {
+                 XmlParserException | InvalidResponseException e) {
             log.error("Failed to read stored files: {}", e.getMessage(), e);
             throw new StorageException("Failed to read stored files", e);
         }
@@ -143,7 +142,7 @@ public class MinioStorageService implements StorageService {
             }
         } catch (ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | IOException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException  | InvalidResponseException e) {
+                 XmlParserException | InvalidResponseException e) {
             log.error("File not found: {}", e.getMessage(), e);
             throw new StorageFileNotFoundException("File not found: " + filename, e);
         }
@@ -161,7 +160,7 @@ public class MinioStorageService implements StorageService {
             log.info("Deleted file: {}/{}", bucketName, filename);
         } catch (ErrorResponseException | InsufficientDataException | InternalException |
                  InvalidKeyException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException  | InvalidResponseException e) {
+                 XmlParserException | InvalidResponseException e) {
             log.error("Failed to delete file: {}", e.getMessage(), e);
             throw new IOException("Failed to delete file", e);
         }

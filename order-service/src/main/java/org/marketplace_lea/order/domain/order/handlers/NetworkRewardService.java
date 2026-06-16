@@ -2,6 +2,7 @@ package org.marketplace_lea.order.domain.order.handlers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.common.exceptions.ConsoEpargneException;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.account.AccountSponsorshipEntity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
@@ -12,6 +13,7 @@ import org.marketplace_lea.common.entities.wallet.WalletV2Type;
 import org.marketplace_lea.common.repositories.TransactionV2JpaRepository;
 import org.marketplace_lea.common.repositories.account.AccountSponsorshipJpaRepository;
 import org.marketplace_lea.common.services.wallet.WalletV2Service;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -86,7 +88,7 @@ public class NetworkRewardService {
         } catch (Exception e) {
             log.error("[NetworkRewardService.dispatchToNetwork] Error dispatching to network for account {}: {}",
                 account.getId(), e.getMessage(), e);
-            throw new RuntimeException("Failed to dispatch to network", e);
+            throw new ConsoEpargneException("Failed to dispatch to network !", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
