@@ -16,6 +16,4 @@ public interface TransactionV2Service {
     Optional<TransactionDTO> findTransactionById(String id);
 
     Page<TransactionDTO> searchTransactions(TransactionV2SearchCriteria criteria, Pageable pageable);
-    
-    void deleteTransaction(String id);
 }

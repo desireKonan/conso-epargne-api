@@ -1,7 +1,6 @@
 package org.marketplace_lea.common.forms.transactions;
 
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

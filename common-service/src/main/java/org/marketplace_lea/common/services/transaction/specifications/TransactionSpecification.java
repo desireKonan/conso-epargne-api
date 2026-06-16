@@ -16,10 +16,6 @@ public final class TransactionSpecification {
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getId() != null && !criteria.getId().isEmpty()) {
-                predicates.add(criteriaBuilder.equal(root.get("id"), criteria.getId()));
-            }
-
             if (criteria.getSourceWalletId() != null && !criteria.getSourceWalletId().isEmpty()) {
                 predicates.add(criteriaBuilder.equal(root.get("source").get("id"), criteria.getSourceWalletId()));
             }

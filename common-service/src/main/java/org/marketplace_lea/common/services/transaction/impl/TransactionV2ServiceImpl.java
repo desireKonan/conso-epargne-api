@@ -46,9 +46,7 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
         WalletV2Entity destination = walletRepository.findById(form.getDestinationWalletId())
                 .orElseThrow(() -> new ConsoEpargneException("Wallet destination non trouvé: " + form.getDestinationWalletId(), HttpStatus.NOT_FOUND));
 
-        if (source.equals(destination)) {
-            throw new RuntimeException("Impossible de créer une transaction avec le même wallet source et destination");
-        }
+        validateSameSource(source, destination);
 
         // Mapper le formulaire vers l'entité
         TransactionV2Entity transaction = transactionMapper.toDto(form);
@@ -71,10 +69,7 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
         TransactionV2Entity transaction = transactionRepository.findById(form.transactionId())
                 .orElseThrow(() -> new RuntimeException("Transaction non trouvée: " + form.transactionId()));
 
-        if (transaction.getTransactionStatus() != TransactionStatus.PENDING && transaction.getTransactionStatus() != TransactionStatus.IN_PROGRESS) {
-            log.info("[TransactionV2Service] {} transaction: {}, this transaction cannot be {}", options, form.transactionId(), options);
-            throw new RuntimeException("Impossible de valider une transaction déjà traitée !");
-        }
+        validateTransaction(form.transactionId(), options, transaction.getTransactionStatus());
 
         if(ValidationTransactionStatus.VALIDATE.equals(form.status())) {
             transaction.setTransactionStatus(TransactionStatus.SUCCESS);
@@ -111,9 +106,20 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
                 .map(transactionMapper::toDto);
     }
 
-    @Override
-    public void deleteTransaction(String id) {
-        log.info("[TransactionV2Service] Deleting transaction: {}", id);
-        transactionRepository.deleteById(id);
+
+    /// Méthodes privées.
+    public void validateSameSource(WalletV2Entity source, WalletV2Entity destination) {
+        if (source.equals(destination)) {
+            log.info("[TransactionV2Service] No transaction with same wallet (source and destination) cannot be done !");
+            throw new ConsoEpargneException("Impossible de créer une transaction avec le même wallet source et destination !", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+    public void validateTransaction(String transactionId, String options, TransactionStatus status) {
+        if (!TransactionStatus.PENDING.equals(status) && !TransactionStatus.IN_PROGRESS.equals(status)) {
+            log.info("[TransactionV2Service] {} transaction: {}, this transaction cannot be {}", options, transactionId, options);
+            throw new ConsoEpargneException("Impossible de valider une transaction déjà traitée !", HttpStatus.BAD_REQUEST);
+        }
     }
 }

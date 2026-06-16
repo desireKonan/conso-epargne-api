@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionV2SearchCriteria {
-    private String id;
     private String sourceWalletId;
     private String destinationWalletId;
     private String phoneNumber;
