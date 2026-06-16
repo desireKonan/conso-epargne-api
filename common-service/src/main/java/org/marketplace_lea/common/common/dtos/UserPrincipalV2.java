@@ -2,6 +2,7 @@ package org.marketplace_lea.common.common.dtos;
 
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import lombok.Getter;
+import org.marketplace_lea.common.services.account.DefaultAccountV2Service;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * <p>Équivalent de {@link UserPrincipalV2} mais basé sur l'entité {@code AccountV2Entity}
  * (table {@code ce_account_v2}) au lieu de l'entité {@code Account} legacy (table {@code ce_account}).
- * Utilisé par {@link org.marketplace_lea.common.services.v2.account.DefaultAccountV2Service}
+ * Utilisé par {@link DefaultAccountV2Service}
  * pour l'authentification Spring Security dans le module prometheus-service.</p>
  *
  * <p>Règles d'état du compte :</p>

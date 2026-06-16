@@ -1,4 +1,4 @@
-package org.marketplace_lea.common.services.v2.wallet;
+package org.marketplace_lea.common.services.wallet;
 
 import org.marketplace_lea.common.common.constants.ConsoEpargneConstants;
 import org.marketplace_lea.common.common.exceptions.AmountCannotBeNegative2Exception;
@@ -13,6 +13,7 @@ import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.CurrencyV2Entity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
+import org.marketplace_lea.common.entities.transaction.TransactionV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Type;
 import org.marketplace_lea.common.repositories.CurrencyJpaRepository;
@@ -26,8 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Implémentation du service de gestion des wallets V2.
@@ -58,6 +61,12 @@ public class WalletV2ServiceImpl implements WalletV2Service {
 
         log.info("Création d'un nouveau wallet type={} pour account={}", walletType, account.getLogin());
         return createNewWallet(walletType, currencyValue, account);
+    }
+
+    @Override
+    public WalletV2Entity getById(String walletId) {
+        return walletRepository.findById(walletId)
+                .orElseThrow(() -> new ConsoEpargneException("Wallet source non trouvé: " + walletId, HttpStatus.NOT_FOUND));
     }
 
     @Override
@@ -159,6 +168,54 @@ public class WalletV2ServiceImpl implements WalletV2Service {
         walletRepository.save(buyerWallet);
 
         log.info("Achat réussi : {} ConsoM de {} par {}", amount, sellerAccount.getLogin(), buyerAccount.getLogin());
+    }
+
+    @Override
+    public void applyDebitToSource(TransactionV2Entity transaction) {
+        BigDecimal debitAmount = transaction.retrieveAmountToDebit();
+        var walletSource = transaction.getSource();
+
+        if (transaction.hasLeaToPointTransfert()) {
+            // Case 1: LEA Coin to Point transfer - debit coinAmount
+            walletSource.removeFromBalance(debitAmount);
+        } else if (transaction.hasProfitsToLeaTransfert()) {
+            // Case 2: Profit to LEA transfer - debit from investment profits
+            walletSource.removeFromInvestmentProfitsBalance(transaction.getAmount());
+        } else {
+            // Case 3: Standard transaction
+            walletSource.removeFromBalance(debitAmount);
+        }
+
+        log.info("Débit appliqué: {} pour la transaction {}", debitAmount, transaction.getId());
+        this.saveWallets(transaction);
+    }
+
+    @Override
+    public void applyCreditToDestination(TransactionV2Entity transaction) {
+        BigDecimal creditAmount = transaction.retrieveAmountToCredit();
+        var destination = transaction.getDestination();
+        destination.addToBalance(creditAmount);
+
+        log.info("Crédit appliqué: {} pour le wallet {}", creditAmount, transaction.getId());
+        var destinationSaved = this.walletRepository.save(destination);
+        log.info("Crédit appliqué: {} pour le wallet {}", creditAmount, destinationSaved.getId());
+    }
+
+    @Override
+    public void saveWallets(TransactionV2Entity transaction) {
+        Set<WalletV2Entity> walletsToSave = new HashSet<>();
+
+        if (transaction.getSource() != null) {
+            walletsToSave.add(transaction.getSource());
+        }
+        if (transaction.getDestination() != null) {
+            walletsToSave.add(transaction.getDestination());
+        }
+
+        if (!walletsToSave.isEmpty()) {
+            walletRepository.saveAll(walletsToSave);
+            log.info("Portefeuilles sauvegardés pour la transaction {}", transaction.getId());
+        }
     }
 
     @Override

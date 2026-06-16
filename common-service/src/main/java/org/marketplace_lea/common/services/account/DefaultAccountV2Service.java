@@ -1,4 +1,4 @@
-package org.marketplace_lea.common.services.v2.account;
+package org.marketplace_lea.common.services.account;
 
 import org.marketplace_lea.common.common.dtos.UserPrincipalV2;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;

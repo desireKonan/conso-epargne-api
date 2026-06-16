@@ -1,10 +1,11 @@
-package org.marketplace_lea.common.services.v2.wallet;
+package org.marketplace_lea.common.services.wallet;
 
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
 import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
+import org.marketplace_lea.common.entities.transaction.TransactionV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Type;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,6 @@ import java.util.Optional;
  * </p>
  */
 public interface WalletV2Service {
-
     /**
      * Récupère ou crée un wallet du type spécifié pour un compte.
      * 
@@ -35,6 +35,15 @@ public interface WalletV2Service {
      * @return le wallet (existant ou nouvellement créé)
      */
     WalletV2Entity getOrCreateWallet(AccountV2Entity account, CurrencyValue currencyValue, WalletV2Type walletType);
+
+    /**
+     * Récupère ou crée un wallet du type spécifié pour un compte.
+     *
+     * @param walletId   le wallet Id
+     * @return le wallet (existant ou nouvellement créé)
+     */
+    WalletV2Entity getById(String walletId);
+
 
     /**
      * Crée un nouveau wallet pour un compte.
@@ -73,6 +82,27 @@ public interface WalletV2Service {
      * @param amount        montant à acheter
      */
     void buyConsomPoints(AccountV2Entity buyerAccount, AccountV2Entity sellerAccount, BigDecimal amount);
+
+    /**
+     * Applique un débit au wallet source.
+     *
+     * @param transaction  transaction
+     */
+    void applyDebitToSource(TransactionV2Entity transaction);
+
+    /**
+     * Applique un débit au wallet destination.
+     *
+     * @param transaction (Transaction).
+     */
+    void applyCreditToDestination(TransactionV2Entity transaction);
+
+    /**
+     * Applique un débit au wallet destination.
+     *
+     * @param transaction (Transaction).
+     */
+    void saveWallets(TransactionV2Entity transaction);
 
     /**
      * Retourne la liste paginée des comptes ayant des points ConsoM disponibles à la vente

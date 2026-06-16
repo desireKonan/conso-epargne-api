@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneException;
 import org.marketplace_lea.common.dtos.transactions.TransactionDTO;
+import org.marketplace_lea.common.entities.account.AccountV2Entity;
 import org.marketplace_lea.common.entities.transaction.TransactionStatus;
 import org.marketplace_lea.common.entities.transaction.TransactionV2Entity;
 import org.marketplace_lea.common.entities.wallet.WalletV2Entity;
@@ -13,17 +14,17 @@ import org.marketplace_lea.common.forms.transactions.ValidateTransactionForm;
 import org.marketplace_lea.common.forms.transactions.ValidationTransactionStatus;
 import org.marketplace_lea.common.mapper.TransactionV2Mapper;
 import org.marketplace_lea.common.repositories.TransactionV2Repository;
-import org.marketplace_lea.common.repositories.WalletV2JpaRepository;
 import org.marketplace_lea.common.services.transaction.TransactionV2Service;
 import org.marketplace_lea.common.services.transaction.specifications.TransactionSpecification;
+import org.marketplace_lea.common.services.wallet.WalletV2Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Slf4j
@@ -32,7 +33,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TransactionV2ServiceImpl implements TransactionV2Service {
     private final TransactionV2Repository transactionRepository;
-    private final WalletV2JpaRepository walletRepository;
+    private final WalletV2Service walletService;
     private final TransactionV2Mapper transactionMapper;
 
     @Override
@@ -40,11 +41,8 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
         log.info("[TransactionV2Service] Creating new transaction with reference: {}", form.getPaymentReference());
 
         // Vérifier l'existence des wallets
-        WalletV2Entity source = walletRepository.findById(form.getSourceWalletId())
-                .orElseThrow(() -> new ConsoEpargneException("Wallet source non trouvé: " + form.getSourceWalletId(), HttpStatus.NOT_FOUND));
-
-        WalletV2Entity destination = walletRepository.findById(form.getDestinationWalletId())
-                .orElseThrow(() -> new ConsoEpargneException("Wallet destination non trouvé: " + form.getDestinationWalletId(), HttpStatus.NOT_FOUND));
+        WalletV2Entity source = walletService.getById(form.getSourceWalletId());
+        WalletV2Entity destination = walletService.getById(form.getDestinationWalletId());
 
         validateSameSource(source, destination);
 
@@ -70,21 +68,12 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
                 .orElseThrow(() -> new RuntimeException("Transaction non trouvée: " + form.transactionId()));
 
         validateTransaction(form.transactionId(), options, transaction.getTransactionStatus());
+        validateSameSource(transaction.getSource(), transaction.getDestination());
 
         if(ValidationTransactionStatus.VALIDATE.equals(form.status())) {
-            transaction.setTransactionStatus(TransactionStatus.SUCCESS);
-            transaction.setValidatedAt(LocalDateTime.now());
+            handleSuccessValidation(transaction);
         } else {
-            transaction.setTransactionStatus(TransactionStatus.FAILED);
-            transaction.setFailedAt(LocalDateTime.now());
-
-            String currentDesc = transaction.getDescription();
-            transaction.setDescription(currentDesc != null ? currentDesc + " - Rejeté: " + form.rejectionMessage() : "Rejeté: " + form.rejectionMessage());
-        }
-
-        if(transaction.hasSameSource()) {
-            log.error("Error ! Failed to create transaction. Wallet must be different !");
-            throw new ConsoEpargneException("Failed to create transaction. wallets must be different !", HttpStatus.BAD_REQUEST);
+            handleFailedValidation(transaction, form.rejectionMessage());
         }
 
         TransactionV2Entity transactionUpdated = transactionRepository.save(transaction);
@@ -121,5 +110,40 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
             log.info("[TransactionV2Service] {} transaction: {}, this transaction cannot be {}", options, transactionId, options);
             throw new ConsoEpargneException("Impossible de valider une transaction déjà traitée !", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private void updateTransactionInitiator(TransactionV2Entity transaction) {
+        if (!StringUtils.hasText(transaction.getPhoneNumber()) && transaction.getSource() != null) {
+            String phoneNumber = Optional.of(transaction.getSource())
+                    .map(WalletV2Entity::getAccount)
+                    .map(AccountV2Entity::getLogin)
+                    .orElse("");
+            transaction.setPhoneNumber(phoneNumber);
+        }
+    }
+
+
+    private void handleSuccessValidation(TransactionV2Entity transaction) {
+        transaction.validate();
+
+        /// C'est ici que je vais appliquer la logique pour mettre à jour les informations.
+        if (transaction.shouldDebitSource()) {
+            walletService.applyDebitToSource(transaction);
+        }
+
+        // Step 2: Apply credit to destination wallet if needed
+        if (transaction.shouldCreditDestination()) {
+            walletService.applyCreditToDestination(transaction);
+        }
+
+        // Step 3: Update initiator
+        updateTransactionInitiator(transaction);
+    }
+
+
+    private void handleFailedValidation(TransactionV2Entity transaction, String rejectionMessage) {
+        transaction.invalidate();
+        String currentDesc = transaction.getRejectionReason();
+        transaction.setRejectionReason(currentDesc != null ? currentDesc + " - Rejeté: " + rejectionMessage : "Rejeté: " + rejectionMessage);
     }
 }

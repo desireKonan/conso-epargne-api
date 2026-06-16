@@ -2,8 +2,6 @@ package org.marketplace_lea.common.services.transaction.specifications;
 
 
 import jakarta.persistence.criteria.Predicate;
-import org.marketplace_lea.common.entities.transaction.TransactionStatus;
-import org.marketplace_lea.common.entities.transaction.TransactionType;
 import org.marketplace_lea.common.entities.transaction.TransactionV2Entity;
 import org.marketplace_lea.common.forms.transactions.TransactionV2SearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,14 +34,12 @@ public final class TransactionSpecification {
                 predicates.add(criteriaBuilder.equal(root.get("objectId"), criteria.getObjectId()));
             }
 
-            if (criteria.getTransactionStatus() != null && !criteria.getTransactionStatus().isEmpty()) {
-                TransactionStatus status = TransactionStatus.valueOf(criteria.getTransactionStatus());
-                predicates.add(criteriaBuilder.equal(root.get("transactionStatus"), status));
+            if (criteria.getTransactionStatus() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("transactionStatus"), criteria.getTransactionStatus()));
             }
 
-            if (criteria.getTransactionType() != null && !criteria.getTransactionType().isEmpty()) {
-                TransactionType type = TransactionType.fromLabel(criteria.getTransactionType());
-                predicates.add(criteriaBuilder.equal(root.get("transactionType"), type));
+            if (criteria.getTransactionType() != null) {
+                predicates.add(criteriaBuilder.equal(root.get("transactionType"), criteria.getTransactionType()));
             }
 
             if (criteria.getCurrency() != null && !criteria.getCurrency().isEmpty()) {

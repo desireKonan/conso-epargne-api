@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.marketplace_lea.application.configuration.filter.JwtAuthorizationFilter;
 import org.marketplace_lea.common.common.service.auth.WebAuthenticationManager;
 import org.marketplace_lea.common.common.service.jwt.JwtTokenService;
-import org.marketplace_lea.common.services.v2.account.AccountV2UserDetailsService;
+import org.marketplace_lea.common.services.account.AccountV2UserDetailsService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

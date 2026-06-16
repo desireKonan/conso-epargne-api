@@ -16,7 +16,7 @@ import org.marketplace_lea.common.repositories.account.AccountSponsorshipJpaRepo
 import org.marketplace_lea.common.repositories.account.AccountTypeV2JpaRepository;
 import org.marketplace_lea.common.repositories.account.AccountV2JpaRepository;
 import org.marketplace_lea.common.repositories.customer.CustomerV2JpaRepository;
-import org.marketplace_lea.common.services.v2.wallet.WalletV2Service;
+import org.marketplace_lea.common.services.wallet.WalletV2Service;
 import org.marketplace_lea.common.common.exceptions.ConsoEpargneException;
 import org.marketplace_lea.common.common.service.notification.MailService;
 import org.marketplace_lea.common.common.service.notification.RegistrationEmailData;

@@ -1,7 +1,8 @@
 package org.marketplace_lea.prometheus.config;
 
 import org.marketplace_lea.common.common.service.auth.WebAuthenticationManager;
-import org.marketplace_lea.common.services.v2.account.AccountV2UserDetailsService;
+import org.marketplace_lea.common.services.account.AccountV2UserDetailsService;
+import org.marketplace_lea.common.services.account.DefaultAccountV2Service;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *
  * <p>
  * Le
- * {@link org.marketplace_lea.common.services.v2.account.DefaultAccountV2Service}
+ * {@link DefaultAccountV2Service}
  * ({@code "accountV2UserDetailsService"}) est injecté comme
  * {@code UserDetailsService},
  * opérant sur le modèle {@code AccountV2Entity} (table {@code ce_account_v2})

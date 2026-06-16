@@ -15,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.common.exceptions.AmountCannotBeNegative2Exception;
+import org.marketplace_lea.common.common.exceptions.WalletOperationForbiddenException;
 import org.marketplace_lea.common.entities.BaseEntity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
 
@@ -75,6 +77,9 @@ public class WalletV2Entity extends BaseEntity {
     @Column(name = "special_bonus_amount", columnDefinition = "DECIMAL(10, 4)")
     private BigDecimal specialBonusAmount = BigDecimal.ZERO;
 
+    @Column(name = "investment_profits_balance", columnDefinition = "DECIMAL(10, 4)")
+    private BigDecimal investmentProfitsBalance = BigDecimal.ZERO;
+
     @Column(name = "voucher_amount", columnDefinition = "DECIMAL(10, 4)")
     private BigDecimal voucherAmount = BigDecimal.ZERO;
 
@@ -92,5 +97,107 @@ public class WalletV2Entity extends BaseEntity {
     public void prePersist() {
         id = generateWalletId();
         super.setCreatedAt(LocalDateTime.now());
+    }
+
+
+    /**
+     * Permet d'ajouter un montant au porte-feuille.
+     *
+     * @param amount (positif) le montant à ajouter.
+     */
+    public void addToBalance(BigDecimal amount) {
+        validateAmount(amount.signum());
+        balance = balance.add(amount);
+    }
+
+    /**
+     * Permet de retirer un montant du porte-feuille.
+     *
+     * @param amount (positif) le montant à retirer.
+     */
+    public void removeFromBalance(BigDecimal amount) {
+        validateAmount(amount.signum());
+        balance = balance.subtract(amount).signum() < 0 ?
+                BigDecimal.ZERO :
+                balance.subtract(amount);
+    }
+
+    /**
+     * Permet d'ajouter un montant retiré total.
+     *
+     * @param amount (positif) le montant à ajouter.
+     */
+    public void addToDrawn(BigDecimal amount) {
+        log.info("Début de addToDrawn avec amount = {}", amount);
+        validateAmount(amount);
+        log.info("totalDrawnAmount = {}", amount);
+        totalDrawnAmount = totalDrawnAmount == null ? amount : totalDrawnAmount.add(amount);
+        log.info("Nouveau totalDrawnAmount = {}", totalDrawnAmount);
+    }
+
+    /**
+     * Permet d'ajouter un montant retiré total.
+     *
+     * @param amount (positif) le montant à ajouter.
+     */
+    public void addToReservedAmount(BigDecimal amount) {
+        validateAmount(amount);
+        log.info("reservAmount = {}", amount);
+        this.reservedAmount = reservedAmount == null ? amount : reservedAmount.add(amount);
+        log.info("Nouveau reservAmount = {}", this.reservedAmount);
+    }
+
+    /**
+     * Permet de retirer un montant du porte-feuille.
+     *
+     * @param amount (positif) le montant à retirer.
+     */
+    public void removeFromReservedAmount(BigDecimal amount) {
+        validateAmount(amount);
+        BigDecimal currentReserv = this.reservedAmount;
+
+        if (currentReserv == null) {
+            currentReserv = BigDecimal.ZERO;
+        }
+
+        BigDecimal newReserv = currentReserv.subtract(amount);
+
+        if (newReserv.signum() < 0) {
+            newReserv = BigDecimal.ZERO;
+        }
+
+        this.reservedAmount = newReserv;
+        addToBalance(amount); // Cette méthode doit elle aussi utiliser les getters/setters si elle accède à d'autres propriétés
+    }
+
+    public void addToInvestmentProfitsBalance(double amount) {
+        validateAmount(amount);
+        investmentProfitsBalance = investmentProfitsBalance != null ? investmentProfitsBalance.add(BigDecimal.valueOf(amount)) : BigDecimal.valueOf(amount);
+    }
+
+    public void removeFromInvestmentProfitsBalance(BigDecimal amount) {
+        validateAmount(amount.signum());
+        investmentProfitsBalance = investmentProfitsBalance.subtract(amount);
+    }
+
+    public void validPoints(int points, String message) {
+        if (balance.intValue() < points) {
+            throw new WalletOperationForbiddenException(message);
+        }
+    }
+
+
+    /// Méthodes privées.
+    private void validateAmount(double amount) {
+        if (amount < 0) {
+            throw new AmountCannotBeNegative2Exception("Le montant ne doit pas être négatif !");
+        }
+    }
+
+    private void validateAmount(BigDecimal amount) {
+        if (amount == null || amount.signum() < 0) {
+            log.info("Montant nul ou négatif détecté, exception levée");
+            throw new AmountCannotBeNegative2Exception("Le montant ne doit pas être négatif !");
+        }
     }
 }
