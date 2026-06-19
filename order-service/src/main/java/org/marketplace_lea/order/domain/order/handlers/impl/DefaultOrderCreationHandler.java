@@ -16,7 +16,7 @@ import org.marketplace_lea.order.common.repository.order.VoucherV2JpaRepository;
 import org.marketplace_lea.order.domain.order.dto.OrderCreationDTO;
 import org.marketplace_lea.order.domain.order.form.CreateOrderV2Form;
 import org.marketplace_lea.order.domain.order.events.OrderPaidEvent;
-import org.marketplace_lea.common.common.event.OrderV2EventPublisher;
+import org.marketplace_lea.common.common.event.ConsoEventPublisher;
 import org.marketplace_lea.order.domain.order.handlers.OrderHandler;
 import org.marketplace_lea.order.domain.order.mapper.OrderV2Mapper;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +53,7 @@ public class DefaultOrderCreationHandler implements OrderHandler<CreateOrderV2Fo
     private final CartItemV2JpaRepository cartItemV2JpaRepository;
     private final VoucherV2JpaRepository voucherV2JpaRepository;
     private final PaymentMethodJpaRepository paymentMethodJpaRepository;
-    private final OrderV2EventPublisher<OrderPaidEvent> eventPublisher;
+    private final ConsoEventPublisher<OrderPaidEvent> eventPublisher;
 
     @Override
     public OrderCreationDTO handle(CreateOrderV2Form createDTO) {

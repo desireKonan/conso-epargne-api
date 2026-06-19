@@ -8,10 +8,10 @@ import org.springframework.stereotype.Component;
  * Based on EventPublisher from common-service, adapted for v2 events.
  */
 @Component
-public class OrderV2EventPublisher<T> {
+public class ConsoEventPublisher<T> {
     private final ApplicationEventPublisher eventPublisher;
 
-    public OrderV2EventPublisher(ApplicationEventPublisher eventPublisher) {
+    public ConsoEventPublisher(ApplicationEventPublisher eventPublisher) {
         this.eventPublisher = eventPublisher;
     }
 
