@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
+import org.marketplace_lea.common.dtos.wallets.WalletBalanceDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 public class TransactionDTO {
     private String id;
 
-    private WalletV2DTO source;
+    private WalletBalanceDTO source;
 
-    private WalletV2DTO destination;
+    private WalletBalanceDTO destination;
 
     private String phoneNumber;
 

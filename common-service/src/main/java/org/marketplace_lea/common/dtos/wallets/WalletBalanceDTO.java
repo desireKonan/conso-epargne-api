@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletV2DTO {
+public class WalletBalanceDTO {
     private String walletId;
     private BigDecimal investedCoinAmount;
     private BigDecimal balance;

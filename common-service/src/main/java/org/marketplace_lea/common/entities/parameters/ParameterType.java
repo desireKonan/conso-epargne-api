@@ -4,5 +4,6 @@ public enum ParameterType {
     STRING,
     BOOLEAN,
     INT,
+    DOUBLE,
     FLOAT
 }

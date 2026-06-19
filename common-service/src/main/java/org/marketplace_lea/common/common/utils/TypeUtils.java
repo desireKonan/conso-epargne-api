@@ -25,8 +25,15 @@ public final class TypeUtils {
         return 0.0f;
     }
 
+    public static Double doubleValue(ParameterConfigEntity config) {
+        if (ParameterType.DOUBLE.name().equals(config.getDataType())) {
+            return Double.valueOf(config.getValue());
+        }
+        return 0.0;
+    }
+
     public static int intValue(ParameterConfigEntity config) {
-        if (ParameterType.FLOAT.name().equals(config.getDataType())) {
+        if (ParameterType.INT.name().equals(config.getDataType())) {
             return Integer.parseInt(config.getValue());
         }
         return 0;

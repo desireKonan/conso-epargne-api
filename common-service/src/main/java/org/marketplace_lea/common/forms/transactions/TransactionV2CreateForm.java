@@ -18,19 +18,17 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransactionV2CreateForm {
-    @NotBlank(message = "L'ID de la source est obligatoire")
     private String sourceWalletId;
 
-    @NotBlank(message = "L'ID de la destination est obligatoire")
     private String destinationWalletId;
 
     @NotBlank(message = "Le numéro de téléphone est obligatoire")
     private String phoneNumber;
 
-    @NotBlank(message = "La référence de paiement est obligatoire")
     private String paymentReference;
 
     private String objectId;
+
     private String description;
 
     @NotNull(message = "Le montant est obligatoire")
@@ -40,14 +38,10 @@ public class TransactionV2CreateForm {
     @NotBlank(message = "La devise est obligatoire")
     private String currency;
 
-    @Positive(message = "Le montant en jetons doit être positif")
     private BigDecimal coinAmount;
 
     private Float fees;
 
     @NotBlank(message = "Le type de transaction est obligatoire")
     private TransactionType transactionType;
-
-    @NotBlank(message = "Le type de transaction est obligatoire")
-    private TransactionStatus transactionStatus;
 }

@@ -1,4 +1,4 @@
-package org.marketplace_lea.order.domain.order.handlers;
+package org.marketplace_lea.order.domain.order.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class NetworkRewardService {
+public class NetworkRewardDispatcher {
     private final WalletV2Service walletService;
     private final TransactionV2JpaRepository transactionService;
     private final AccountSponsorshipJpaRepository sponsorshipRepository;

@@ -181,6 +181,10 @@ public class WalletV2Entity extends BaseEntity {
         investmentProfitsBalance = investmentProfitsBalance.subtract(amount);
     }
 
+    public void addToPartnerBonusAmount(float amount) {
+        partnerBonusAmount = partnerBonusAmount.add(BigDecimal.valueOf(amount));
+    }
+
     public void addToPersonalSaving(float amount) {
         personalSavingAmount = personalSavingAmount.add(BigDecimal.valueOf(amount));
     }

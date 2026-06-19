@@ -1,4 +1,4 @@
-package org.marketplace_lea.common.services.wallet;
+package org.marketplace_lea.common.services.wallet.impl;
 
 import org.marketplace_lea.common.common.constants.ConsoEpargneConstants;
 import org.marketplace_lea.common.common.exceptions.AmountCannotBeNegative2Exception;
@@ -9,8 +9,8 @@ import org.marketplace_lea.common.common.exceptions.ConsoWalletException;
 import org.marketplace_lea.common.common.utils.ConvertValueConsoUtils;
 import org.marketplace_lea.common.dtos.ConsomWalletDTO;
 import org.marketplace_lea.common.dtos.ConsomWalletStatsDTO;
+import org.marketplace_lea.common.dtos.wallets.WalletBalanceDTO;
 import org.marketplace_lea.common.dtos.wallets.WalletDTO;
-import org.marketplace_lea.common.dtos.wallets.WalletV2DTO;
 import org.marketplace_lea.common.entities.CurrencyValue;
 import org.marketplace_lea.common.entities.CurrencyV2Entity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
@@ -22,6 +22,7 @@ import org.marketplace_lea.common.repositories.CurrencyJpaRepository;
 import org.marketplace_lea.common.repositories.WalletV2JpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.marketplace_lea.common.services.wallet.WalletV2Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Implémentation du service de gestion des wallets V2.
@@ -68,6 +73,13 @@ public class WalletV2ServiceImpl implements WalletV2Service {
         return walletRepository.findById(walletId)
                 .orElseThrow(() -> new ConsoEpargneException("Wallet source non trouvé: " + walletId, HttpStatus.NOT_FOUND));
     }
+
+    @Override
+    public WalletV2Entity getByAccountIdAndType(String accountId, WalletV2Type type) {
+        return walletRepository.getByAccountIdAndType(accountId, type)
+                .orElseThrow(() -> new ConsoEpargneException("Wallet source non trouvé: " + accountId, HttpStatus.NOT_FOUND));
+    }
+
 
     @Override
     @Transactional
@@ -219,12 +231,12 @@ public class WalletV2ServiceImpl implements WalletV2Service {
     }
 
     @Override
-    public Page<WalletV2DTO> getAvailableConsomPointsForSale(Pageable pageable) {
+    public Page<WalletBalanceDTO> getAvailableConsomPointsForSale(Pageable pageable) {
         return walletRepository.findAvailableConsomPointsForSale(pageable);
     }
 
     @Override
-    public Page<WalletV2DTO> getPeopleWithConsomPoints(Pageable pageable) {
+    public Page<WalletBalanceDTO> getPeopleWithConsomPoints(Pageable pageable) {
         return walletRepository.findWalletsByBalancePositive(WalletV2Type.CONSOM, pageable);
     }
 
@@ -325,7 +337,7 @@ public class WalletV2ServiceImpl implements WalletV2Service {
     }
 
     private void verifyWallet(Optional<WalletV2Entity> walletV2Entity) {
-        if(walletV2Entity.isEmpty()) {
+        if (walletV2Entity.isEmpty()) {
             throw new ConsoEpargneNotFoundDataException("Le wallet n'existe pas !");
         }
     }

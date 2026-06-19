@@ -2,6 +2,8 @@ package org.marketplace_lea.prometheus.domain.parameter_config.services.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.jcajce.provider.keystore.util.ParameterUtil;
+import org.marketplace_lea.common.common.utils.TypeUtils;
 import org.marketplace_lea.common.entities.parameters.ParameterConfigEntity;
 import org.marketplace_lea.common.repositories.ParameterConfigJpaRepository;
 import org.marketplace_lea.prometheus.domain.parameter_config.dto.ParameterConfigDto;
@@ -17,6 +19,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityNotFoundException;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -46,6 +50,61 @@ public class ParameterConfigServiceImpl implements ParameterConfigService {
         return repository.findOne(spec)
                 .map(mapper::toDto)
                 .orElseThrow(() -> new EntityNotFoundException("Paramètre introuvable avec la clé : " + key));
+    }
+
+    @Override
+    public Optional<String> getStringValue(String key) {
+        return repository.getByKey(key)
+                .map(TypeUtils::stringValue);
+    }
+
+    @Override
+    public Optional<Boolean> getBooleanValue(String key) {
+        return repository.getByKey(key)
+                .map(TypeUtils::booleanValue);
+    }
+
+    @Override
+    public Optional<Integer> getIntValue(String key) {
+        return repository.getByKey(key)
+                .map(TypeUtils::intValue);
+    }
+
+    @Override
+    public Optional<Double> getDoubleValue(String key) {
+        return repository.getByKey(key)
+                .map(TypeUtils::doubleValue);
+    }
+
+    @Override
+    public Optional<Float> getFloatValue(String key) {
+        return repository.getByKey(key)
+                .map(TypeUtils::floatValue);
+    }
+
+    @Override
+    public String getStringValueOrDefault(String key, String defaultValue) {
+        return getStringValue(key).orElse(defaultValue);
+    }
+
+    @Override
+    public boolean getBooleanValueOrDefault(String key, boolean defaultValue) {
+        return getBooleanValue(key).orElse(defaultValue);
+    }
+
+    @Override
+    public int getIntValueOrDefault(String key, int defaultValue) {
+        return getIntValue(key).orElse(defaultValue);
+    }
+
+    @Override
+    public double getDoubleValueOrDefault(String key, double defaultValue) {
+        return getDoubleValue(key).orElse(defaultValue);
+    }
+
+    @Override
+    public float getFloatValueOrDefault(String key, float defaultValue) {
+        return getFloatValue(key).orElse(defaultValue);
     }
 
     @Override

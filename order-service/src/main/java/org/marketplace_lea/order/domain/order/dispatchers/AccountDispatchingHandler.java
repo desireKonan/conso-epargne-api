@@ -1,16 +1,18 @@
-package org.marketplace_lea.order.domain.order.handlers;
+package org.marketplace_lea.order.domain.order.dispatchers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.marketplace_lea.common.entities.account.AccountSponsorshipEntity;
 import org.marketplace_lea.common.entities.account.AccountV2Entity;
+import org.marketplace_lea.common.entities.customer.CustomerV2Entity;
 import org.marketplace_lea.common.entities.subscription.ConsoSubscriptionV2Entity;
 import org.marketplace_lea.common.entities.subscription.ConsoSubscriptionType;
-import org.marketplace_lea.common.repositories.AccountSponsorshipRepository;
 import org.marketplace_lea.common.repositories.ConsoSubscriptionRepository;
-import org.marketplace_lea.common.repositories.ParameterConfigRepository;
-import org.marketplace_lea.common.services.ParameterConfigService;
+import org.marketplace_lea.common.repositories.account.AccountSponsorshipJpaRepository;
 import org.marketplace_lea.order.common.entities.order.OrderItemV2Entity;
+import org.marketplace_lea.order.domain.order.handlers.CommissionHandler;
+import org.marketplace_lea.order.domain.order.handlers.impl.DefaultPersonalSavingHandler;
+import org.marketplace_lea.prometheus.domain.parameter_config.services.ParameterConfigService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,11 +44,11 @@ public class AccountDispatchingHandler {
     private static final double DEFAULT_OR_SUBSCRIPTION_MULTIPLIER = 2.0;
 
     private final ConsoSubscriptionRepository subscriptionRepository;
-    private final AccountSponsorshipRepository sponsorshipRepository;
+    private final AccountSponsorshipJpaRepository sponsorshipRepository;
     private final ParameterConfigService configService;
-    private final NetworkRewardService networkRewardService;
-    private final PersonalSavingService personalSavingService;
-    private final CommissionService commissionService;
+    private final NetworkRewardDispatcher networkRewarDispatcher;
+    private final DefaultPersonalSavingHandler defaultPersonalSavingHandler;
+    private final CommissionHandler commissionService;
 
     /**
      * Redistribue les économies générées par une commande.
@@ -54,7 +56,7 @@ public class AccountDispatchingHandler {
      * @param account            le compte qui a effectué l'achat
      * @param totalSavingAmount  le montant total d'économie généré
      */
-    public void dispatchSaving(AccountV2Entity account, float totalSavingAmount) {
+    public void dispatchSaving(AccountV2Entity account, CustomerV2Entity customer, float totalSavingAmount) {
         if (account == null) {
             log.warn("[AccountDispatchingHandler.dispatchSaving] Account is null, skipping dispatch");
             return;
@@ -62,7 +64,7 @@ public class AccountDispatchingHandler {
 
         try {
             boolean isCashbackActive = isCashbackActive();
-            List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(account);
+            List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(customer);
             
             log.info("[AccountDispatchingHandler.dispatchSaving] Account: {}, Cashback active: {}, Subscriptions count: {}", 
                 account.getId(), isCashbackActive, subscriptions.size());
@@ -76,7 +78,7 @@ public class AccountDispatchingHandler {
 
             // Redistribution selon le type d'abonnement
             if (!subscriptions.isEmpty()) {
-                handleSubscriptionBasedDispatching(account, adjustedAmount, subscriptions.get(0));
+                handleSubscriptionBasedDispatching(account, adjustedAmount, subscriptions.getFirst());
             } else {
                 handleStandardDispatching(account, adjustedAmount);
             }
@@ -93,7 +95,7 @@ public class AccountDispatchingHandler {
      * @param account       le compte qui a effectué l'achat
      * @param orderItem     l'item de commande correspondant au kit d'adhésion
      */
-    public void dispatchSavingForAdhesionKit(AccountV2Entity account, Optional<OrderItemV2Entity> orderItem) {
+    public void dispatchSavingForAdhesionKit(AccountV2Entity account, CustomerV2Entity customer, Optional<OrderItemV2Entity> orderItem) {
         if (account == null) {
             log.warn("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Account is null, skipping dispatch");
             return;
@@ -110,13 +112,13 @@ public class AccountDispatchingHandler {
         
         try {
             boolean isCashbackActive = isCashbackActive();
-            List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(account);
+            List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(customer);
             
             log.info("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Account: {}, Sponsor Parent: {}, Cashback active: {}, Subscriptions count: {}", 
                 account.getId(), sponsorParent.getId(), isCashbackActive, subscriptions.size());
 
             if (isCashbackActive || !subscriptions.isEmpty()) {
-                processAdhesionKitCommission(account, sponsorParent, orderItem, subscriptions.get(0));
+                processAdhesionKitCommission(account, sponsorParent, orderItem, subscriptions.getFirst());
             }
 
         } catch (Exception e) {
@@ -133,7 +135,7 @@ public class AccountDispatchingHandler {
             return amount;
         }
 
-        ConsoSubscriptionV2Entity subscription = subscriptions.get(0);
+        ConsoSubscriptionV2Entity subscription = subscriptions.getFirst();
         if (ConsoSubscriptionType.OR.value().equals(subscription.getType())) {
             double multiplier = configService.getDoubleValueOrDefault(
                 CONFIG_OR_SUBSCRIPTION_MULTIPLIER, 
@@ -166,11 +168,11 @@ public class AccountDispatchingHandler {
             
             log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Solidarity fund: dispatching {} to network", 
                 amountToDispatch);
-            networkRewardService.dispatchToNetwork(account, amountToDispatch, maxLevel);
+            networkRewarDispatcher.dispatchToNetwork(account, amountToDispatch, maxLevel);
         } else {
             log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Standard subscription: adding {} to personal saving", 
                 amount);
-            personalSavingService.addToPersonalSaving(account, amount);
+            defaultPersonalSavingHandler.addToPersonalSaving(account.getId(), amount);
         }
     }
 
@@ -179,7 +181,7 @@ public class AccountDispatchingHandler {
      */
     private void handleStandardDispatching(AccountV2Entity account, float amount) {
         log.info("[AccountDispatchingHandler.handleStandardDispatching] Adding {} to personal saving", amount);
-        personalSavingService.addToPersonalSaving(account, amount);
+        defaultPersonalSavingHandler.addToPersonalSaving(account.getId(), amount);
     }
 
     /**
@@ -203,17 +205,17 @@ public class AccountDispatchingHandler {
             
             log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Solidarity fund: dispatching {} to network", 
                 amountToDispatch);
-            networkRewardService.dispatchToNetwork(account, amountToDispatch, maxLevel);
+            networkRewarDispatcher.dispatchToNetwork(account, amountToDispatch, maxLevel);
         } else {
             // Vérifier si le parent est un partenaire
             if (isPartnerAccount(sponsorParent)) {
                 // Commission pour le parrain (partenaire)
-                commissionService.addPartnerCommission(sponsorParent, account, commissionAmount);
+                commissionService.addPartnerCommission(sponsorParent.getId(), account.getLogin(), commissionAmount);
             }
             
             // Commission pour l'adhérent (toujours ajoutée)
             float adherentCommission = calculateAdherentCommission(orderItem);
-            commissionService.addCommission(account, adherentCommission);
+            commissionService.addCommission(account.getId(), adherentCommission);
             
             log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Commissions distributed - Sponsor Parent: {}, Adherent: {}", 
                 commissionAmount, adherentCommission);
@@ -277,16 +279,16 @@ public class AccountDispatchingHandler {
      * Récupère le parent parrain via la table de parrainage.
      */
     private Optional<AccountV2Entity> getSponsorParent(AccountV2Entity account) {
-        return sponsorshipRepository.findActiveSponsorByChildId(account.getId())
+        return sponsorshipRepository.getActiveSponsorByChildId(account.getId())
             .map(AccountSponsorshipEntity::getParent);
     }
 
     /**
      * Récupère les souscriptions actives d'un compte.
      */
-    private List<ConsoSubscriptionV2Entity> getCurrentSubscriptions(AccountV2Entity account) {
-        String customerId = Optional.ofNullable(account.getCustomer())
-            .map(customer -> customer.getId())
+    private List<ConsoSubscriptionV2Entity> getCurrentSubscriptions(CustomerV2Entity customer) {
+        String customerId = Optional.ofNullable(customer)
+            .map(CustomerV2Entity::getId)
             .orElse("NONE");
         return subscriptionRepository.getByCustomerId(customerId);
     }

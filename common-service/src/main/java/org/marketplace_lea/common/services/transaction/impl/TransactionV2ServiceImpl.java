@@ -112,7 +112,7 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
         }
     }
 
-    private void updateTransactionInitiator(TransactionV2Entity transaction) {
+    public void updateTransactionInitiator(TransactionV2Entity transaction) {
         if (!StringUtils.hasText(transaction.getPhoneNumber()) && transaction.getSource() != null) {
             String phoneNumber = Optional.of(transaction.getSource())
                     .map(WalletV2Entity::getAccount)
@@ -123,7 +123,7 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
     }
 
 
-    private void handleSuccessValidation(TransactionV2Entity transaction) {
+    public void handleSuccessValidation(TransactionV2Entity transaction) {
         transaction.validate();
 
         /// C'est ici que je vais appliquer la logique pour mettre à jour les informations.
@@ -141,7 +141,7 @@ public class TransactionV2ServiceImpl implements TransactionV2Service {
     }
 
 
-    private void handleFailedValidation(TransactionV2Entity transaction, String rejectionMessage) {
+    public void handleFailedValidation(TransactionV2Entity transaction, String rejectionMessage) {
         transaction.invalidate();
         String currentDesc = transaction.getRejectionReason();
         transaction.setRejectionReason(currentDesc != null ? currentDesc + " - Rejeté: " + rejectionMessage : "Rejeté: " + rejectionMessage);
