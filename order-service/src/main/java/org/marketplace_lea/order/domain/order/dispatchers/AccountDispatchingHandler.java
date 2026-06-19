@@ -153,8 +153,11 @@ public class AccountDispatchingHandler {
     /**
      * Gère la redistribution basée sur le type d'abonnement.
      */
-    private void handleSubscriptionBasedDispatching(AccountV2Entity account, float amount,
-                                                    ConsoSubscriptionV2Entity subscription) {
+    private void handleSubscriptionBasedDispatching(
+            AccountV2Entity account,
+            float amount,
+            ConsoSubscriptionV2Entity subscription
+    ) {
         if (ConsoSubscriptionType.SOLIDARITY_FUND.value().equals(subscription.getType())) {
             double solidarityRate = configService.getDoubleValueOrDefault(
                     CONFIG_SOLIDARITY_FUND_RATE,
