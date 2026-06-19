@@ -53,8 +53,8 @@ public class AccountDispatchingHandler {
     /**
      * Redistribue les économies générées par une commande.
      *
-     * @param account            le compte qui a effectué l'achat
-     * @param totalSavingAmount  le montant total d'économie généré
+     * @param account           le compte qui a effectué l'achat
+     * @param totalSavingAmount le montant total d'économie généré
      */
     public void dispatchSaving(AccountV2Entity account, CustomerV2Entity customer, float totalSavingAmount) {
         if (account == null) {
@@ -65,9 +65,9 @@ public class AccountDispatchingHandler {
         try {
             boolean isCashbackActive = isCashbackActive();
             List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(customer);
-            
-            log.info("[AccountDispatchingHandler.dispatchSaving] Account: {}, Cashback active: {}, Subscriptions count: {}", 
-                account.getId(), isCashbackActive, subscriptions.size());
+
+            log.info("[AccountDispatchingHandler.dispatchSaving] Account: {}, Cashback active: {}, Subscriptions count: {}",
+                    account.getId(), isCashbackActive, subscriptions.size());
 
             float adjustedAmount = totalSavingAmount;
 
@@ -84,16 +84,16 @@ public class AccountDispatchingHandler {
             }
 
         } catch (Exception e) {
-            log.error("[AccountDispatchingHandler.dispatchSaving] Error processing dispatch for account {}: {}", 
-                account.getId(), e.getMessage(), e);
+            log.error("[AccountDispatchingHandler.dispatchSaving] Error processing dispatch for account {}: {}",
+                    account.getId(), e.getMessage(), e);
         }
     }
 
     /**
      * Redistribue les économies générées par l'achat d'un kit d'adhésion.
      *
-     * @param account       le compte qui a effectué l'achat
-     * @param orderItem     l'item de commande correspondant au kit d'adhésion
+     * @param account   le compte qui a effectué l'achat
+     * @param orderItem l'item de commande correspondant au kit d'adhésion
      */
     public void dispatchSavingForAdhesionKit(AccountV2Entity account, CustomerV2Entity customer, Optional<OrderItemV2Entity> orderItem) {
         if (account == null) {
@@ -109,21 +109,21 @@ public class AccountDispatchingHandler {
         }
 
         AccountV2Entity sponsorParent = parent.get();
-        
+
         try {
             boolean isCashbackActive = isCashbackActive();
             List<ConsoSubscriptionV2Entity> subscriptions = getCurrentSubscriptions(customer);
-            
-            log.info("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Account: {}, Sponsor Parent: {}, Cashback active: {}, Subscriptions count: {}", 
-                account.getId(), sponsorParent.getId(), isCashbackActive, subscriptions.size());
+
+            log.info("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Account: {}, Sponsor Parent: {}, Cashback active: {}, Subscriptions count: {}",
+                    account.getId(), sponsorParent.getId(), isCashbackActive, subscriptions.size());
 
             if (isCashbackActive || !subscriptions.isEmpty()) {
                 processAdhesionKitCommission(account, sponsorParent, orderItem, subscriptions.getFirst());
             }
 
         } catch (Exception e) {
-            log.error("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Error processing for account {}: {}", 
-                account.getId(), e.getMessage(), e);
+            log.error("[AccountDispatchingHandler.dispatchSavingForAdhesionKit] Error processing for account {}: {}",
+                    account.getId(), e.getMessage(), e);
         }
     }
 
@@ -138,12 +138,12 @@ public class AccountDispatchingHandler {
         ConsoSubscriptionV2Entity subscription = subscriptions.getFirst();
         if (ConsoSubscriptionType.OR.value().equals(subscription.getType())) {
             double multiplier = configService.getDoubleValueOrDefault(
-                CONFIG_OR_SUBSCRIPTION_MULTIPLIER, 
-                DEFAULT_OR_SUBSCRIPTION_MULTIPLIER
+                    CONFIG_OR_SUBSCRIPTION_MULTIPLIER,
+                    DEFAULT_OR_SUBSCRIPTION_MULTIPLIER
             );
             float doubledAmount = (float) (amount * multiplier);
-            log.info("[AccountDispatchingHandler.applySubscriptionBonus] OR subscription bonus applied: {} -> {}", 
-                amount, doubledAmount);
+            log.info("[AccountDispatchingHandler.applySubscriptionBonus] OR subscription bonus applied: {} -> {}",
+                    amount, doubledAmount);
             return doubledAmount;
         }
 
@@ -153,25 +153,25 @@ public class AccountDispatchingHandler {
     /**
      * Gère la redistribution basée sur le type d'abonnement.
      */
-    private void handleSubscriptionBasedDispatching(AccountV2Entity account, float amount, 
-                                                     ConsoSubscriptionV2Entity subscription) {
+    private void handleSubscriptionBasedDispatching(AccountV2Entity account, float amount,
+                                                    ConsoSubscriptionV2Entity subscription) {
         if (ConsoSubscriptionType.SOLIDARITY_FUND.value().equals(subscription.getType())) {
             double solidarityRate = configService.getDoubleValueOrDefault(
-                CONFIG_SOLIDARITY_FUND_RATE, 
-                DEFAULT_SOLIDARITY_FUND_RATE
+                    CONFIG_SOLIDARITY_FUND_RATE,
+                    DEFAULT_SOLIDARITY_FUND_RATE
             );
             float amountToDispatch = (float) (amount * solidarityRate);
             int maxLevel = configService.getIntValueOrDefault(
-                CONFIG_MAX_NETWORK_LEVEL, 
-                DEFAULT_MAX_NETWORK_LEVEL
+                    CONFIG_MAX_NETWORK_LEVEL,
+                    DEFAULT_MAX_NETWORK_LEVEL
             );
-            
-            log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Solidarity fund: dispatching {} to network", 
-                amountToDispatch);
+
+            log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Solidarity fund: dispatching {} to network",
+                    amountToDispatch);
             networkRewarDispatcher.dispatchToNetwork(account, amountToDispatch, maxLevel);
         } else {
-            log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Standard subscription: adding {} to personal saving", 
-                amount);
+            log.info("[AccountDispatchingHandler.handleSubscriptionBasedDispatching] Standard subscription: adding {} to personal saving",
+                    amount);
             defaultPersonalSavingHandler.addToPersonalSaving(account.getId(), amount);
         }
     }
@@ -187,24 +187,27 @@ public class AccountDispatchingHandler {
     /**
      * Traite les commissions pour l'achat d'un kit d'adhésion.
      */
-    private void processAdhesionKitCommission(AccountV2Entity account, AccountV2Entity sponsorParent, 
-                                               Optional<OrderItemV2Entity> orderItem,
-                                               ConsoSubscriptionV2Entity subscription) {
+    private void processAdhesionKitCommission(
+            AccountV2Entity account,
+            AccountV2Entity sponsorParent,
+            Optional<OrderItemV2Entity> orderItem,
+            ConsoSubscriptionV2Entity subscription
+    ) {
         float commissionAmount = calculateAdhesionKitCommission(orderItem);
-        
+
         if (ConsoSubscriptionType.SOLIDARITY_FUND.value().equals(subscription.getType())) {
             double solidarityRate = configService.getDoubleValueOrDefault(
-                CONFIG_SOLIDARITY_FUND_RATE, 
-                DEFAULT_SOLIDARITY_FUND_RATE
+                    CONFIG_SOLIDARITY_FUND_RATE,
+                    DEFAULT_SOLIDARITY_FUND_RATE
             );
             float amountToDispatch = (float) (commissionAmount * solidarityRate);
             int maxLevel = configService.getIntValueOrDefault(
-                CONFIG_MAX_NETWORK_LEVEL, 
-                DEFAULT_MAX_NETWORK_LEVEL
+                    CONFIG_MAX_NETWORK_LEVEL,
+                    DEFAULT_MAX_NETWORK_LEVEL
             );
-            
-            log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Solidarity fund: dispatching {} to network", 
-                amountToDispatch);
+
+            log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Solidarity fund: dispatching {} to network",
+                    amountToDispatch);
             networkRewarDispatcher.dispatchToNetwork(account, amountToDispatch, maxLevel);
         } else {
             // Vérifier si le parent est un partenaire
@@ -212,13 +215,13 @@ public class AccountDispatchingHandler {
                 // Commission pour le parrain (partenaire)
                 commissionService.addPartnerCommission(sponsorParent.getId(), account.getLogin(), commissionAmount);
             }
-            
+
             // Commission pour l'adhérent (toujours ajoutée)
             float adherentCommission = calculateAdherentCommission(orderItem);
             commissionService.addCommission(account.getId(), adherentCommission);
-            
-            log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Commissions distributed - Sponsor Parent: {}, Adherent: {}", 
-                commissionAmount, adherentCommission);
+
+            log.info("[AccountDispatchingHandler.processAdhesionKitCommission] Commissions distributed - Sponsor Parent: {}, Adherent: {}",
+                    commissionAmount, adherentCommission);
         }
     }
 
@@ -227,13 +230,13 @@ public class AccountDispatchingHandler {
      */
     private float calculateAdhesionKitCommission(Optional<OrderItemV2Entity> orderItem) {
         double commissionRate = configService.getDoubleValueOrDefault(
-            CONFIG_ADHERANT_KIT_COMMISSION_RATE, 
-            DEFAULT_ADHERANT_KIT_COMMISSION_RATE
+                CONFIG_ADHERANT_KIT_COMMISSION_RATE,
+                DEFAULT_ADHERANT_KIT_COMMISSION_RATE
         );
         return orderItem
-            .map(OrderItemV2Entity::getProduct)
-            .map(product -> (float) (product.getPrice().doubleValue() * commissionRate))
-            .orElse(0.0f);
+                .map(OrderItemV2Entity::getProduct)
+                .map(product -> (float) (product.getPrice().doubleValue() * commissionRate))
+                .orElse(0.0f);
     }
 
     /**
@@ -241,13 +244,12 @@ public class AccountDispatchingHandler {
      */
     private float calculateAdherentCommission(Optional<OrderItemV2Entity> orderItem) {
         double commissionRate = configService.getDoubleValueOrDefault(
-            CONFIG_ADHERENT_COMMISSION_RATE, 
-            DEFAULT_ADHERENT_COMMISSION_RATE
+                CONFIG_ADHERENT_COMMISSION_RATE,
+                DEFAULT_ADHERENT_COMMISSION_RATE
         );
-        return orderItem
-            .map(OrderItemV2Entity::getProduct)
-            .map(product -> (float) (product.getPrice().doubleValue() * commissionRate))
-            .orElse(0.0f);
+        return orderItem.map(OrderItemV2Entity::getProduct)
+                .map(product -> (float) (product.getPrice().doubleValue() * commissionRate))
+                .orElse(0.0f);
     }
 
     /**
@@ -262,8 +264,8 @@ public class AccountDispatchingHandler {
      */
     private boolean isPartnerAccount(AccountV2Entity account) {
         return Optional.ofNullable(account.getAccountType())
-            .map(accountType -> PARTNER.equals(accountType.getId()))
-            .orElse(false);
+                .map(accountType -> PARTNER.equals(accountType.getId()))
+                .orElse(false);
     }
 
     /**
@@ -271,8 +273,8 @@ public class AccountDispatchingHandler {
      */
     private boolean isSystemAccount(AccountV2Entity account) {
         return Optional.ofNullable(account.getAccountType())
-            .map(accountType -> SYSTEM_ACCOUNT_ID.equals(accountType.getId()))
-            .orElse(false);
+                .map(accountType -> SYSTEM_ACCOUNT_ID.equals(accountType.getId()))
+                .orElse(false);
     }
 
     /**
@@ -280,7 +282,7 @@ public class AccountDispatchingHandler {
      */
     private Optional<AccountV2Entity> getSponsorParent(AccountV2Entity account) {
         return sponsorshipRepository.getActiveSponsorByChildId(account.getId())
-            .map(AccountSponsorshipEntity::getParent);
+                .map(AccountSponsorshipEntity::getParent);
     }
 
     /**
@@ -288,8 +290,8 @@ public class AccountDispatchingHandler {
      */
     private List<ConsoSubscriptionV2Entity> getCurrentSubscriptions(CustomerV2Entity customer) {
         String customerId = Optional.ofNullable(customer)
-            .map(CustomerV2Entity::getId)
-            .orElse("NONE");
+                .map(CustomerV2Entity::getId)
+                .orElse("NONE");
         return subscriptionRepository.getByCustomerId(customerId);
     }
 }
